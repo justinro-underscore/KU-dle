@@ -1,10 +1,9 @@
 package com.base.data;
 
+import com.base.data.models.Event;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.util.List;
-import java.util.Map;
 
 //TODO: add tests
 public class DairyFarmerClient {
@@ -14,7 +13,7 @@ public class DairyFarmerClient {
         gson = new Gson();
     }
 
-    public List<Pet> getEvents() {
+    public List<Event> getEvents() {
         return null;
     }
 

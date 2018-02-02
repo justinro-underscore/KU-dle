@@ -1,3 +1,5 @@
+package com.base.data.models;
+
 public class User
 {
   String name;
@@ -36,7 +38,7 @@ public class User
   {
     return isAdmin;
   }
-  public setAdmin(boolean isAdmin)
+  public void setAdmin(boolean isAdmin)
   {
     this.isAdmin = isAdmin;
   }

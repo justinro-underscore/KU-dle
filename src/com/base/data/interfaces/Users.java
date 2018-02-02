@@ -1,4 +1,8 @@
-package com.base.data.models;
+package com.base.data.interfaces;
+
+import com.base.data.models.User;
+
+import java.util.List;
 
 public class Users {
     /*

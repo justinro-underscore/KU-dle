@@ -3,10 +3,10 @@ package com.base.data.models;
 public class Event
 {
   private String m_name;
-  private List<User> m_attendees;
+//  private List<User> m_attendees;
   //TODO private List<datetime> validTimes;
 
-  Event(name, date, a list of valid times);
+//  Event(name, date, a list of valid times);
 
   /*
   @pre: A valid string
