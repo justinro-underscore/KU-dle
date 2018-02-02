@@ -1,0 +1,15 @@
+                                      Main - Launcher
+      Runner         UI          Database Connector      Events     Users
+      
+      What goes into an Event: Date, Times of Availability, Name , List of Attendees
+      
+      Noah & Alex- SQL 
+      Varun- Carry
+      Harry & Justin - UI
+      
+      
+      
+      
+      
+      
+                
