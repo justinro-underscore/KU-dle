@@ -6,9 +6,12 @@ import com.base.data.models.User;
 import com.google.gson.Gson;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 //TODO: add tests
+//TODO: load users on initialization
 //TODO: Validate input (no duplicate named events on same day?)
 public class DairyFarmerClient {
     private Gson gson;
@@ -19,9 +22,8 @@ public class DairyFarmerClient {
         gson = new Gson();
     }
 
-    //TODO: change to pass in date object?
-    //TODO: Use fileUtil library?
-    public List<Event> getEvents(String date) throws IOException {
+    //TODO: Use apache fileUtil library?
+    public List<Event> getEvents(LocalDate date) throws IOException {
         reader = new BufferedReader(new FileReader("res/events/" + date + ".txt"));
 
         String json = reader.readLine();
@@ -30,18 +32,27 @@ public class DairyFarmerClient {
         return events.getEvents();
     }
 
-    public void createEvent(String eventName, String creatorName, List<User> attendees) {
+    public void createEvent(String eventName, String creatorName, LocalDate date, List<LocalDateTime> times, List<User> attendees) {
         //TODO: add date time obj
-        //TODO: maybe add to list -> have list of events for each day
-        Event event = new Event(eventName, creatorName, attendees);
+        //TODO: maybe add to list -> have list of events for each day and get specific by creator
+        Event event = new Event(eventName, creatorName, date, times, attendees);
         String eventJson = gson.toJson(event);
     }
 
-    public void deleteEvent() {
+    public void deleteEvent(String creatorName, List<LocalDateTime> times) {
+        //TODO: search for event by getting file with specific date. Search through event for creator
+        // and matching times (needed is user can create multiple events on same day)
 
     }
 
     //TODO: what to do with users (store data in res/users/)
+    public void createUser() {}
+
+    public void deleteUser() {}
+
+    public List<User> getUsers() {
+        return null;
+    }
 
     //TODO: create file writer
     //TODO: change file name to date (requires from createEvent)

@@ -1,5 +1,7 @@
 package com.base.data.models;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Event
@@ -7,15 +9,17 @@ public class Event
   private String m_eventName;
   private String m_creatorName;
   private List<User> m_attendees;
-  //TODO private List<datetime> validTimes;
+  private LocalDate m_date;
+  private List<LocalDateTime> m_times;
 
 //  Event(name, date, a list of valid times);
 
-
-  public Event(String eventName, String creatorName, List<User> attendees) {
+  public Event(String eventName, String creatorName, LocalDate date, List<LocalDateTime> times, List<User> attendees) {
     this.m_eventName = eventName;
     this.m_creatorName = creatorName;
     this.m_attendees = attendees;
+    this.m_date = date;
+    this.m_times = times;
   }
 
   /*
