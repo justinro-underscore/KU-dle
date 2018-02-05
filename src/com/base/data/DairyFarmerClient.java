@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 //TODO: add tests
@@ -32,14 +32,16 @@ public class DairyFarmerClient {
         return events.getEvents();
     }
 
-    public void createEvent(String eventName, String creatorName, LocalDate date, List<LocalDateTime> times, List<User> attendees) {
-        //TODO: add date time obj
+    public void createEvent(String eventName, String creatorName, LocalDate date, List<LocalTime> times, List<User> attendees) {
+        //TODO: maybe have list of times with their own list of attendees (that way we know who is available at what time)?
         //TODO: maybe add to list -> have list of events for each day and get specific by creator
         Event event = new Event(eventName, creatorName, date, times, attendees);
         String eventJson = gson.toJson(event);
+        //TODO: SAVE FILE
+        //TODO: do we want to return the event too?
     }
 
-    public void deleteEvent(String creatorName, List<LocalDateTime> times) {
+    public void deleteEvent(String creatorName, List<LocalTime> times) {
         //TODO: search for event by getting file with specific date. Search through event for creator
         // and matching times (needed is user can create multiple events on same day)
 
