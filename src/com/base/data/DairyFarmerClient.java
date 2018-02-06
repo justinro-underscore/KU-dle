@@ -50,10 +50,9 @@ public class DairyFarmerClient {
 
     }
 
-    //TODO: what to do with users (store data in res/users/)
     //@pre: requires a username, and password, and if the user is an admin
-    //@post: creates a new user and adds it to the list of known users
-    //@return: nothing
+    //@post: checks if user exits, then adds it to the user hashmap if it doesnt
+    //@return: nothing (may change to a bool)
     public void createUser(String username, String password, boolean adminStatus)
     {
       if(user_pass.get(username) == null)
