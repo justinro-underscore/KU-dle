@@ -1,0 +1,4 @@
+username, password, isAdmin
+nbrabec, securepass, true
+jroderman, loser, false
+plaintext, passwords, arebad
