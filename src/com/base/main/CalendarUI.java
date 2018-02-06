@@ -2,6 +2,7 @@ package com.base.main;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 
 public class CalendarUI
 {
@@ -83,6 +84,8 @@ public class CalendarUI
 	@FXML private Label boxDay02;
 	@FXML private Label boxDay01;
 	@FXML private Label boxDay00;
+	
+	@FXML private ListView<String> listView;
 	
 	
 }
