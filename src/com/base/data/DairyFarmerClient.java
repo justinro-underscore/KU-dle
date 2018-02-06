@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.*;
 
 //TODO: add tests
 //TODO: load users on initialization
@@ -18,6 +18,8 @@ public class DairyFarmerClient {
     private Gson gson;
     private FileWriter writer;
     private BufferedReader reader;
+    private HashMap<String, String> user_pass = new HashMap<>();
+    private HashMap<String, bool> user_isAdmin = new HashMap<>();
 
     public DairyFarmerClient() {
         gson = new Gson();
@@ -78,5 +80,29 @@ public class DairyFarmerClient {
         writer = new FileWriter("res/events/" + fileName + ".txt");
         writer.write(json);
         writer.close();
+    }
+
+    //@pre: Requires the filename containing user information
+    //@post: initializes a file scanner that seperates terms by ",". Adds user information to Hashaps
+    //@return: nothing
+    public void initHashMaps(String userFile)
+    {
+      //take from: https://stackoverflow.com/questions/30832101/buffered-reader-read-text-until-character
+      Scanner scan = new Scanner(new File("/path/to/file.txt"));
+      scan.useDelimiter(Pattern.compile(","));
+      while (scan.hasNext())
+      {
+        String uName = scan.next();
+        String pass = scan.next();
+        String isAdm = scan.next();
+        Bool adm = false;
+        if (isAdm == "true")
+        {
+          adm = true;
+        }
+
+        user_pass.put(uName, pass);
+        user_isAdmin.put(uName, adm);
+      }
     }
 }
