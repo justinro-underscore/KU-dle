@@ -13,6 +13,7 @@ import java.util.List;
 //TODO: add tests
 //TODO: load users on initialization
 //TODO: Validate input (no duplicate named events on same day?)
+//TODO: How are we handling user login? Delete/add options should only be available to admins.
 public class DairyFarmerClient {
     private Gson gson;
     private FileWriter writer;
@@ -48,6 +49,9 @@ public class DairyFarmerClient {
     }
 
     //TODO: what to do with users (store data in res/users/)
+    //@pre: requires a username, and password, and if the user is an admin
+    //@post: creates a new user and adds it to the list of known users
+    //@return: nothing
     public void createUser(String username, String password, boolean adminStatus)
     {
       User newUser = new User(username, password, adminStatus);
@@ -55,6 +59,9 @@ public class DairyFarmerClient {
       //TODO save to file containing list of known users
     }
 
+    //@pre: requires a username
+    //@post: finds and removes a user from the know user list
+    //@return: //TODO I think this should be a bool to see if a user was deleted or not.
     public void deleteUser(user)
     {
       //delete (<- lol what a command) getUser(user);
