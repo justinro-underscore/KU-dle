@@ -48,10 +48,19 @@ public class DairyFarmerClient {
     }
 
     //TODO: what to do with users (store data in res/users/)
-    public void createUser() {}
+    public void createUser(String username, String password, boolean adminStatus)
+    {
+      User newUser = new User(username, password, adminStatus);
+      String userJson = gson.toJson(newUser);
+      //TODO save to file containing list of known users
+    }
 
-    public void deleteUser() {}
+    public void deleteUser(user)
+    {
+      //delete (<- lol what a command) getUser(user);
+    }
 
+    //Is this supposed to search for and return some user?
     public List<User> getUsers() {
         return null;
     }
