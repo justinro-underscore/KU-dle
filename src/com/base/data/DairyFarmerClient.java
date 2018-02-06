@@ -56,9 +56,15 @@ public class DairyFarmerClient {
     //@return: nothing
     public void createUser(String username, String password, boolean adminStatus)
     {
-      User newUser = new User(username, password, adminStatus);
-      String userJson = gson.toJson(newUser);
-      //TODO save to file containing list of known users
+      if(user_pass.get(username) == null)
+      {
+        user_pass.put(username, password);
+        user_isAdmin.put(username, adminStatus);
+      }
+      else
+      {
+        //TODO Throw error stating that username is taken.
+      }
     }
 
     //@pre: requires a username
@@ -66,7 +72,8 @@ public class DairyFarmerClient {
     //@return: //TODO I think this should be a bool to see if a user was deleted or not.
     public void deleteUser(user)
     {
-      //delete (<- lol what a command) getUser(user);
+      //TODO make sure this doesnt break
+      user_pass.delete(user);
     }
 
     //Is this supposed to search for and return some user?
@@ -85,17 +92,17 @@ public class DairyFarmerClient {
     //@pre: Requires the filename containing user information
     //@post: initializes a file scanner that seperates terms by ",". Adds user information to Hashaps
     //@return: nothing
-    public void initHashMaps(String userFile)
+    public void initUsers(String userFile)
     {
-      //take from: https://stackoverflow.com/questions/30832101/buffered-reader-read-text-until-character
-      Scanner scan = new Scanner(new File("/path/to/file.txt"));
+      //taken from: https://stackoverflow.com/questions/30832101/buffered-reader-read-text-until-character
+      Scanner scan = new Scanner(new File("/res/events" + userFile + ".txt"));
       scan.useDelimiter(Pattern.compile(","));
       while (scan.hasNext())
       {
         String uName = scan.next();
         String pass = scan.next();
         String isAdm = scan.next();
-        Bool adm = false;
+        boolean adm = false;
         if (isAdm == "true")
         {
           adm = true;
