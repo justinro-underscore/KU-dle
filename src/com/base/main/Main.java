@@ -15,8 +15,8 @@ public class Main extends Application
 		
 	public void start(Stage stage) throws Exception
 	{
-		Parent parent = FXMLLoader.load(getClass().getClassLoader().getResource("CalendarUI.fxml"));
-		Scene scene = new Scene(parent);
+		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("\\CalendarUI.fxml"));
+		Scene scene = new Scene(root);
 		stage.setTitle("Calendar");
 		stage.setScene(scene);
 		stage.show();
