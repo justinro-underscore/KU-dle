@@ -35,9 +35,13 @@ public class DairyFarmerClient {
         getEvents(date).add(event);
     }
 
-    public void deleteEvent(String creatorName, List<LocalTime> times) {
-        //TODO: search for event by getting file with specific date. Search through event for creator
-        // and matching times (needed is user can create multiple events on same day)
+    public void deleteEvent(LocalDate date, String eventName) throws IOException {
+        List<Event> events = getEvents(date);
+        for(Event event : events){
+            if(event.getEventName().equals(eventName)){
+                events.remove(event);
+            }
+        }
 
     }
 
