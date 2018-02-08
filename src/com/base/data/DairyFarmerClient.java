@@ -1,6 +1,7 @@
 package com.base.data;
 
 import com.base.data.interfaces.Events;
+import com.base.data.interfaces.Users;
 import com.base.data.models.Event;
 import com.base.data.models.User;
 import com.google.gson.Gson;
@@ -18,15 +19,13 @@ public class DairyFarmerClient {
     private Gson gson;
     private FileWriter writer;
     private BufferedReader reader;
-    private HashMap<String, String> user_pass = new HashMap<>();
-    private HashMap<String, bool> user_isAdmin = new HashMap<>();
 
     public DairyFarmerClient() {
         gson = new Gson();
     }
 
     //TODO: Use apache fileUtil library?
-    public List<Event> getEvents(LocalDate date) throws IOException {
+    public HashMap<String, Event> getEvents(LocalDate date) throws IOException {
         reader = new BufferedReader(new FileReader("res/events/" + date + ".txt"));
 
         String json = reader.readLine();
@@ -53,26 +52,19 @@ public class DairyFarmerClient {
     //@pre: requires a username, and password, and if the user is an admin
     //@post: checks if user exits, then adds it to the user hashmap if it doesnt
     //@return: nothing (may change to a bool)
-    public void createUser(String username, String password, boolean adminStatus)
+    public void createUser(User user)
     {
-      if(user_pass.get(username) == null)
-      {
-        user_pass.put(username, password);
-        user_isAdmin.put(username, adminStatus);
-      }
-      else
-      {
-        //TODO Throw error stating that username is taken.
-      }
+        //TODO Throw error stating that username is taken
+
     }
 
     //@pre: requires a username
     //@post: finds and removes a user from the know user list
     //@return: //TODO I think this should be a bool to see if a user was deleted or not.
-    public void deleteUser(user)
+    public void deleteUser(User user)
     {
       //TODO make sure this doesnt break
-      user_pass.delete(user);
+
     }
 
     //Is this supposed to search for and return some user?
@@ -91,24 +83,12 @@ public class DairyFarmerClient {
     //@pre: Requires the filename containing user information
     //@post: initializes a file scanner that seperates terms by ",". Adds user information to Hashaps
     //@return: nothing
-    public void initUsers(String userFile)
-    {
-      //taken from: https://stackoverflow.com/questions/30832101/buffered-reader-read-text-until-character
-      Scanner scan = new Scanner(new File("/res/events" + userFile + ".txt"));
-      scan.useDelimiter(Pattern.compile(","));
-      while (scan.hasNext())
-      {
-        String uName = scan.next();
-        String pass = scan.next();
-        String isAdm = scan.next();
-        boolean adm = false;
-        if (isAdm == "true")
-        {
-          adm = true;
-        }
+    public HashMap<String, User> initUsers(String userFile) throws IOException {
+        reader = new BufferedReader(new FileReader("res//" + userFile + ".txt"));
 
-        user_pass.put(uName, pass);
-        user_isAdmin.put(uName, adm);
-      }
+        String json = reader.readLine();
+        Users users = gson.fromJson(json, Users.class);
+
+        return users.getUsers();
     }
 }

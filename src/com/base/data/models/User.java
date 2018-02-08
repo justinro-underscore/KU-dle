@@ -2,9 +2,9 @@ package com.base.data.models;
 
 public class User
 {
-  String name;
-  String password;
-  boolean isAdmin;
+  private String name;
+  private String password;
+  private boolean isAdmin;
 
   public User (
   String name,

@@ -2,20 +2,20 @@ package com.base.data.interfaces;
 
 import com.base.data.models.Event;
 
-import java.util.List;
+import java.util.HashMap;
 
 public class Events {
-    private List<Event> events;
+    private HashMap<String, Event> events;
 
-    public Events(List<Event> events) {
+    public Events(HashMap<String, Event> events) {
         this.events = events;
     }
 
-    public List<Event> getEvents() {
+    public HashMap<String, Event> getEvents() {
         return events;
     }
 
-    public void setEvents(List<Event> events) {
+    public void setEvents(HashMap<String, Event> events) {
         this.events = events;
     }
 }

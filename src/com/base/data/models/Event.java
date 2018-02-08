@@ -9,6 +9,7 @@ public class Event
   private String m_eventName;
   private String m_creatorName;
   private List<User> m_attendees;
+  //TODO: replace with Alex's  Time class
   private LocalDate m_date;
   private List<LocalTime> m_times;
 
