@@ -18,6 +18,7 @@ public class DairyFarmerClient {
     private BufferedReader reader;
 
     private HashMap<LocalDate, List<Event>> events;
+    private HashMap<String, User> users;
 
     public DairyFarmerClient() {
         gson = new Gson();
@@ -31,6 +32,7 @@ public class DairyFarmerClient {
     public void createEvent(String eventName, String creatorName, LocalDate date, List<LocalTime> times, List<User> attendees) throws IOException {
         //TODO: maybe have list of times with their own list of attendees (that way we know who is available at what time)?
         //TODO: maybe add to list -> have list of events for each day and get specific by creator
+        //TODO: only if date exists in hashmap add event -> else add date and list with event to hashmap
         Event event = new Event(eventName, creatorName, date, times, attendees);
         getEvents(date).add(event);
     }
@@ -78,17 +80,29 @@ public class DairyFarmerClient {
     //@pre: Requires the filename containing user information
     //@post: initializes a file scanner that seperates terms by ",". Adds user information to Hashaps
     //@return: nothing
-    public HashMap<String, User> initUsers(String userFile) throws IOException {
-        reader = new BufferedReader(new FileReader("res//" + userFile + ".txt"));
+    public void initUsers() throws IOException {
+        File userFile = new File("res/users.txt");
+        if (!userFile.exists()) {
+            users = new HashMap<>();
+            return;
+        }
+
+        reader = new BufferedReader(new FileReader("res/users.txt"));
 
         String json = reader.readLine();
-        Users users = gson.fromJson(json, Users.class);
+        Users tempUsers = gson.fromJson(json, Users.class);
 
-        return users.getUsers();
+        users = tempUsers.getUsers();
     }
 
     public void initEvents() throws IOException {
-        reader = new BufferedReader(new FileReader("res/events/events.txt"));
+        File eventsFile = new File("res/events.txt");
+        if (!eventsFile.exists()) {
+            events = new HashMap<>();
+            return;
+        }
+
+        reader = new BufferedReader(new FileReader("res/events.txt"));
 
         String json = reader.readLine();
         Events tempEvents = gson.fromJson(json, Events.class);
