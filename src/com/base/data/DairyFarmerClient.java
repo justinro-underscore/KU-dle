@@ -11,36 +11,28 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
-//TODO: add tests
-//TODO: load users on initialization
-//TODO: Validate input (no duplicate named events on same day?)
-//TODO: How are we handling user login? Delete/add options should only be available to admins.
+//TODO: load users and events on initialization
 public class DairyFarmerClient {
     private Gson gson;
     private FileWriter writer;
     private BufferedReader reader;
 
+    private HashMap<LocalDate, List<Event>> events;
+
     public DairyFarmerClient() {
         gson = new Gson();
     }
 
-    //TODO: Use apache fileUtil library?
-    public HashMap<String, Event> getEvents(LocalDate date) throws IOException {
-        reader = new BufferedReader(new FileReader("res/events/" + date + ".txt"));
-
-        String json = reader.readLine();
-        Events events = gson.fromJson(json, Events.class);
-
-        return events.getEvents();
+    public List<Event> getEvents(LocalDate date) throws IOException {
+        //TODO: not sure if we need a try catch if event list does not exist
+        return events.get(date);
     }
 
-    public void createEvent(String eventName, String creatorName, LocalDate date, List<LocalTime> times, List<User> attendees) {
+    public void createEvent(String eventName, String creatorName, LocalDate date, List<LocalTime> times, List<User> attendees) throws IOException {
         //TODO: maybe have list of times with their own list of attendees (that way we know who is available at what time)?
         //TODO: maybe add to list -> have list of events for each day and get specific by creator
         Event event = new Event(eventName, creatorName, date, times, attendees);
-        String eventJson = gson.toJson(event);
-        //TODO: SAVE FILE
-        //TODO: do we want to return the event too?
+        getEvents(date).add(event);
     }
 
     public void deleteEvent(String creatorName, List<LocalTime> times) {
@@ -72,10 +64,9 @@ public class DairyFarmerClient {
         return null;
     }
 
-    //TODO: create file writer
-    //TODO: change file name to date (requires from createEvent)
+    //TODO: write user and events hashmap to file
     public void createFile(String json, String fileName) throws IOException {
-        writer = new FileWriter("res/events/" + fileName + ".txt");
+        writer = new FileWriter(fileName);
         writer.write(json);
         writer.close();
     }
@@ -91,4 +82,14 @@ public class DairyFarmerClient {
 
         return users.getUsers();
     }
+
+    public void initEvents() throws IOException {
+        reader = new BufferedReader(new FileReader("res/events/events.txt"));
+
+        String json = reader.readLine();
+        Events tempEvents = gson.fromJson(json, Events.class);
+
+        events = tempEvents.getEvents();
+    }
+
 }
