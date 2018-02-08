@@ -48,7 +48,7 @@ public class TestClient
     //TODO edit event that doesnt exist
     return(false);
   }
-
+  //https://github.com/justinro-underscore/KU-dle.git
   public boolean testAdminStatus()
   {
     //TODO can admins actually do admin things?
