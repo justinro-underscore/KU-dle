@@ -1,10 +1,15 @@
 package com.base.main;
 
+import javafx.application.Application;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.stage.Stage;
 
-public class CalendarUI
+public class CalendarUI extends Application
 {
 	@FXML private Label lblCurrentMonth;
 	@FXML private Label lblCurrentDate;
@@ -46,8 +51,8 @@ public class CalendarUI
 	@FXML private Label lblDay02;
 	@FXML private Label lblDay01;
 	@FXML private Label lblDay00;
-	
-	
+
+
 	@FXML private Label boxDay47;
 	@FXML private Label boxDay46;
 	@FXML private Label boxDay45;
@@ -84,8 +89,19 @@ public class CalendarUI
 	@FXML private Label boxDay02;
 	@FXML private Label boxDay01;
 	@FXML private Label boxDay00;
-	
+
 	@FXML private ListView<String> listView;
-	
-	
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+
+	public void start(Stage stage) throws Exception
+	{
+		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("CalendarUI.fxml")); // You might have to change this to "\\Calendar.fxml"
+		Scene scene = new Scene(root);
+		stage.setTitle("Calendar");
+		stage.setScene(scene);
+		stage.show();
+	}
 }
