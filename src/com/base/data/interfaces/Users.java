@@ -4,30 +4,39 @@ import com.base.data.models.User;
 
 import java.util.*;
 
+/*
+* Interface for gson to convert json of users to a HashMap of users
+ */
 public class Users {
     /*
-    Interface for gson to convert json of users to a HashMap of users
+    * @pre: Takes in a hashmap of users with username as key
+    * @post: assign local variable to passed in value
+    * @return: nothing
      */
     private HashMap<String, User> user_list = new HashMap<>();
 
     /*
-    @Pre: takes in populated HashMap of users
-    @Post: sets HashMap of users to passed in users
+    * @pre: takes in populated HashMap of users
+    * @post: sets HashMap of users to passed in users
+    * @return: nothing
      */
     public Users(HashMap<String, User> users) {
         this.user_list = users;
     }
 
     /*
-    @Return: HashMap of user
+    * @pre: nothing
+    * @post: nothing
+    * @return: users
      */
     public HashMap<String, User> getUsers() {
         return this.user_list;
     }
 
     /*
-    @Pre: takes in hashmap of users
-    @Post: sets hashmap of users to passend in users
+    * @pre: takes in hashmap of users
+    * @post: sets hashmap of users to passed in users
+    * @return: nothing
      */
     public void setUsers(HashMap<String, User> users) {
         this.user_list = users;
