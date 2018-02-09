@@ -1,16 +1,20 @@
 package com.base.util;
 
-import java.time.LocalTime;
 import java.util.List;
 
 public class Utilities {
     //TODO: maybe change 20 min to constant - do we want to allow less than 20min meeting times?
-    static boolean isTimeValid(LocalTime timeToCompare, List<LocalTime> times) {
-        int timeToCompareInMin = timeToCompare.getHour() * 60 + timeToCompare.getMinute();
+    /*
+    * @pre: Takes in a time and list of times to compare to
+    * @post: nothing
+    * @return: true if time is valid (does not overlap with other times) else false
+     */
+    static boolean isTimeValid(Time timeToCompare, List<Time> times) {
+        int timeToCompareInMin = timeToCompare.getTime().getHour() * 60 + timeToCompare.getTime().getMinute();
         int timeFromListInMin = 0;
 
-        for (LocalTime time : times) {
-            timeFromListInMin = time.getHour() * 60 + time.getMinute();
+        for (Time time : times) {
+            timeFromListInMin = time.getTime().getHour() * 60 + time.getTime().getMinute();
             if (Math.abs(timeToCompareInMin - timeFromListInMin) < 20) {
                 return false;
             }
