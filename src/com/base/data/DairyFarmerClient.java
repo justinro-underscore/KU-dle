@@ -25,7 +25,8 @@ public class DairyFarmerClient {
     }
 
     public List<Event> getEvents(LocalDate date) throws IOException {
-        //TODO: not sure if we need a try catch if event list does not exist
+        //TODO: not sure if we need to check containsKey if event list does not exist
+
         return events.get(date);
     }
 
@@ -34,7 +35,15 @@ public class DairyFarmerClient {
         //TODO: maybe add to list -> have list of events for each day and get specific by creator
         //TODO: only if date exists in hashmap add event -> else add date and list with event to hashmap
         Event event = new Event(eventName, creatorName, date, times, attendees);
-        getEvents(date).add(event);
+
+        if (events.containsKey(date)) {
+            getEvents(date).add(event);
+        } else {
+            List<Event> tempEvents = new ArrayList<>();
+            tempEvents.add(event);
+
+            events.put(date, tempEvents);
+        }
     }
 
     public void deleteEvent(LocalDate date, String eventName) throws IOException {
@@ -96,6 +105,7 @@ public class DairyFarmerClient {
     }
 
     public void initEvents() throws IOException {
+        //TODO: maybe change path to a constant?
         File eventsFile = new File("res/events.txt");
         if (!eventsFile.exists()) {
             events = new HashMap<>();
@@ -110,4 +120,15 @@ public class DairyFarmerClient {
         events = tempEvents.getEvents();
     }
 
+    public void saveEvents() throws IOException {
+        String eventJson = gson.toJson(events);
+
+        createFile(eventJson, "res/events.txt");
+    }
+
+    public void saveUsers() throws IOException {
+        String userJson = gson.toJson(users);
+
+        createFile(userJson, "res/users.txt");
+    }
 }
