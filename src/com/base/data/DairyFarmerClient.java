@@ -4,6 +4,7 @@ import com.base.data.interfaces.Events;
 import com.base.data.interfaces.Users;
 import com.base.data.models.Event;
 import com.base.data.models.User;
+import com.base.util.Time;
 import com.google.gson.Gson;
 
 import java.io.*;
@@ -30,11 +31,14 @@ public class DairyFarmerClient {
         return events.get(date);
     }
 
-    public void createEvent(String eventName, String creatorName, LocalDate date, List<LocalTime> times, List<User> attendees) throws IOException {
+    //@pre: requires an eventName, creatorName, date and a list of times
+    //@post: creates event and adds to hashmap of events
+    //@return: nothing
+    public void createEvent(String eventName, String creatorName, LocalDate date, List<Time> times) throws IOException {
         //TODO: maybe have list of times with their own list of attendees (that way we know who is available at what time)?
         //TODO: maybe add to list -> have list of events for each day and get specific by creator
         //TODO: only if date exists in hashmap add event -> else add date and list with event to hashmap
-        Event event = new Event(eventName, creatorName, date, times, attendees);
+        Event event = new Event(eventName, creatorName, date, times);
 
         if (events.containsKey(date)) {
             getEvents(date).add(event);
@@ -46,6 +50,9 @@ public class DairyFarmerClient {
         }
     }
 
+    //@pre: requires a date, and event name
+    //@post: if events exists, delete event from hashmap
+    //@return: nothing
     public void deleteEvent(LocalDate date, String eventName) throws IOException {
         List<Event> events = getEvents(date);
         for(Event event : events){
