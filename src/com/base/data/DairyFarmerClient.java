@@ -31,6 +31,80 @@ public class DairyFarmerClient {
     }
 
     /*
+    * @pre: Requires the filename containing user information
+    * @post: creates a hashmap of users
+    * @return: nothing
+    */
+    public void initUsers() throws IOException {
+        File userFile = new File("res/users.txt");
+        if (!userFile.exists()) {
+            users = new HashMap<>();
+            return;
+        }
+
+        reader = new BufferedReader(new FileReader("res/users.txt"));
+
+        String json = reader.readLine();
+        Users tempUsers = gson.fromJson(json, Users.class);
+
+        users = tempUsers.getUsers();
+    }
+
+    /*
+    * @pre: nothing
+    * @post: creates a hashmap of events
+    * @return: nothing
+    */
+    public void initEvents() throws IOException {
+        //TODO: maybe change path to a constant?
+        File eventsFile = new File("res/events.txt");
+        if (!eventsFile.exists()) {
+            events = new HashMap<>();
+            return;
+        }
+
+        reader = new BufferedReader(new FileReader("res/events.txt"));
+
+        String json = reader.readLine();
+        Events tempEvents = gson.fromJson(json, Events.class);
+
+        events = tempEvents.getEvents();
+    }
+
+    /*
+    * @pre: nothing
+    * @post: converts events to json and saves to file
+    * @return: nothing
+    */
+    public void saveEvents() throws IOException {
+        String eventJson = gson.toJson(events);
+
+        createFile(eventJson, "res/events.txt");
+    }
+
+    /*
+    * @pre: nothing
+    * @post: converts user data to json and save to file
+    * @return: nothing
+    */
+    public void saveUsers() throws IOException {
+        String userJson = gson.toJson(users);
+
+        createFile(userJson, "res/users.txt");
+    }
+
+    /*
+    * @pre: String of json data and file name
+    * @post: writes json data to file
+    * @return: nothing
+     */
+    public void createFile(String json, String fileName) throws IOException {
+        writer = new FileWriter(fileName);
+        writer.write(json);
+        writer.close();
+    }
+
+    /*
     * @pre: requires a date to get specific events for that day
     * @post: nothing
     * @return: list of events for the provided date
@@ -95,7 +169,7 @@ public class DairyFarmerClient {
      */
     public void deleteUser(User user)
     {
-      //TODO make sure this doesnt break
+        //TODO make sure this doesnt break
 
     }
 
@@ -106,79 +180,5 @@ public class DairyFarmerClient {
      */
     public List<User> getUsers() {
         return null;
-    }
-
-    /*
-    * @pre: String of json data and file name
-    * @post: writes json data to file
-    * @return: nothing
-     */
-    public void createFile(String json, String fileName) throws IOException {
-        writer = new FileWriter(fileName);
-        writer.write(json);
-        writer.close();
-    }
-
-    /*
-    * @pre: Requires the filename containing user information
-    * @post: creates a hashmap of users
-    * @return: nothing
-    */
-    public void initUsers() throws IOException {
-        File userFile = new File("res/users.txt");
-        if (!userFile.exists()) {
-            users = new HashMap<>();
-            return;
-        }
-
-        reader = new BufferedReader(new FileReader("res/users.txt"));
-
-        String json = reader.readLine();
-        Users tempUsers = gson.fromJson(json, Users.class);
-
-        users = tempUsers.getUsers();
-    }
-
-    /*
-    * @pre: nothing
-    * @post: creates a hashmap of events
-    * @return: nothing
-    */
-    public void initEvents() throws IOException {
-        //TODO: maybe change path to a constant?
-        File eventsFile = new File("res/events.txt");
-        if (!eventsFile.exists()) {
-            events = new HashMap<>();
-            return;
-        }
-
-        reader = new BufferedReader(new FileReader("res/events.txt"));
-
-        String json = reader.readLine();
-        Events tempEvents = gson.fromJson(json, Events.class);
-
-        events = tempEvents.getEvents();
-    }
-
-    /*
-    * @pre: nothing
-    * @post: converts events to json and saves to file
-    * @return: nothing
-    */
-    public void saveEvents() throws IOException {
-        String eventJson = gson.toJson(events);
-
-        createFile(eventJson, "res/events.txt");
-    }
-
-    /*
-    * @pre: nothing
-    * @post: converts user data to json and save to file
-    * @return: nothing
-    */
-    public void saveUsers() throws IOException {
-        String userJson = gson.toJson(users);
-
-        createFile(userJson, "res/users.txt");
     }
 }

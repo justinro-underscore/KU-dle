@@ -1,1 +1,1 @@
-{"0001-01-01":[{"eventName":"EVENT NAME","creatorName":"CREATOR NAME","date":{"year":1,"month":1,"day":1},"times":[{"time":{"hour":1,"minute":1,"second":0,"nano":0},"atendees":[{"name":"Leon Kline","password":"ELECTRIC BUGALOO","isAdmin":false}]}]}]}
+{"0001-01-01":[{"eventName":"EVENT NAME","creatorName":"CREATOR NAME","date":{"year":1,"month":1,"day":1},"times":[{"time":{"hour":1,"minute":1,"second":0,"nano":0},"attendees":[{"name":"Leon Kline","password":"ELECTRIC BUGALOO","isAdmin":false}]}]}]}
