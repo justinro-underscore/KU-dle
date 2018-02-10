@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
-//TODO: load users and events on initialization
 public class DairyFarmerClient {
     private Gson gson;
     private FileWriter writer;
