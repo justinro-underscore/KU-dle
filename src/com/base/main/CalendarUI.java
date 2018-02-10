@@ -117,7 +117,8 @@ public class CalendarUI extends Application
 	private String[] months = { "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"};
 	private String[] days = {"SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
 
-	private int[] currentDate = {0, 0, 0, 0, 0}; // (Month/Day/Year) + (Century, Year)
+	private int[] currentDate = {0, 0, 0}; // (Month/Day/Year)
+	private int[] selectedDate = {0, 0, 0};
 
 	public static void main(String[] args) {
 		launch(args);
@@ -125,16 +126,6 @@ public class CalendarUI extends Application
 
 	public void start(Stage stage) throws Exception
 	{
-//		try {
-//			scene = createRootScene(primaryStage);
-//			primaryStage.setTitle("Version Saver");
-//			primaryStage.setScene(scene);
-//			primaryStage.show();
-//			primaryStage.setOnCloseRequest(evt -> {});
-//		} catch(Exception e) {
-//			e.printStackTrace();
-//		}
-
 		FXMLLoader load = new FXMLLoader(getClass().getResource("/CalendarUI.fxml")); // You might have to change this to "\\Calendar.fxml"
 		load.setController(this);
 		Parent root = (Parent) load.load();
@@ -146,11 +137,13 @@ public class CalendarUI extends Application
 		stage.setTitle("Calendar");
 		stage.setScene(scene);
 		stage.show();
-		startCalendar();
+		setupCalendarBoxes();
+		setCurrDate();
+		changeMonth();
 		initializeListeners();
 	}
 
-	private void initializeListeners()
+	private void setupCalendarBoxes()
 	{
 		calendarDateLabels[0][0] = lblDay00;
 		calendarDateLabels[0][1] = lblDay01;
@@ -239,11 +232,9 @@ public class CalendarUI extends Application
 		calendarDateBoxes[5][6] = boxDay56;
 	}
 
-	private void startCalendar()
+	private void initializeListeners()
 	{
-		setCurrDate();
-		System.out.println(currentDate[0] + "/" + currentDate[1] + "/" + currentDate[2]);
-		createCalendar();
+		// TODO Add button functionality
 	}
 
 	private void setCurrDate()
@@ -253,24 +244,32 @@ public class CalendarUI extends Application
 		currentDate[2] = Integer.parseInt(temp.substring(0, 4)); // Year
 		currentDate[1] = Integer.parseInt(temp.substring(8, 10)); // Day
 		currentDate[0] = Integer.parseInt(temp.substring(5, 7)); // Month
+		for(int i = 0; i < 3; i++)
+		{
+			selectedDate[i] = currentDate[i];
+		}
 	}
 
-	private void createCalendar()
+	private void changeMonth()
 	{
-		int day = currentDate[1];
-		int month = currentDate[0] - 2;
+		int day = selectedDate[1];
+		int month = selectedDate[0] - 2;
 		if(month <= 0)
 			month += 12;
-		int year = currentDate[2] % 100;
+		int year = selectedDate[2] % 100;
 		if(month >= 11)
 			year--;
-		int century = currentDate[2] / 100;
+		int century = selectedDate[2] / 100;
 
 		int dayOfTheWeek = (day + (int) Math.floor((2.6 * month) - 0.2) + year + (year / 4) + (century / 4) - (2 * century)) % 7;
 		System.out.println(days[dayOfTheWeek]);
 
 		int[][] calendarDates = new int[6][7];
-		int prevMonthDays = getAmtOfDays(currentDate[0] - 1); // TODO What if it's January
+		int prevMonthDays;
+		if(currentDate[0] == 1)
+			prevMonthDays = getAmtOfDays(12);
+		else
+			prevMonthDays = getAmtOfDays(currentDate[0] - 1);
 		for(int dayCal = 0; dayCal < 7; dayCal++) // Do first row
 		{
 			calendarDates[0][dayCal] = (prevMonthDays - dayOfTheWeek + dayCal) % prevMonthDays + 1;
