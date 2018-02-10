@@ -21,20 +21,18 @@ public class DairyFarmerClient {
     private HashMap<LocalDate, List<Event>> events;
     private HashMap<String, User> users;
 
-    /*
-    * @pre: nothing
-    * @post: initializes gson object
-    * @return: nothing
+    /**
+     * Initializes gson object
      */
     public DairyFarmerClient() {
         gson = new Gson();
     }
 
-    /*
-    * @pre: Requires the filename containing user information
-    * @post: creates a hashmap of users
-    * @return: nothing
-    */
+    /**
+     * Creates a hashmap of users
+     *
+     * @throws IOException
+     */
     public void initUsers() throws IOException {
         File userFile = new File("res/users.txt");
         if (!userFile.exists()) {
@@ -50,11 +48,11 @@ public class DairyFarmerClient {
         users = tempUsers.getUsers();
     }
 
-    /*
-    * @pre: nothing
-    * @post: creates a hashmap of events
-    * @return: nothing
-    */
+    /**
+     * Creates a hashmap of events
+     *
+     * @throws IOException
+     */
     public void initEvents() throws IOException {
         //TODO: maybe change path to a constant?
         File eventsFile = new File("res/events.txt");
@@ -71,32 +69,34 @@ public class DairyFarmerClient {
         events = tempEvents.getEvents();
     }
 
-    /*
-    * @pre: nothing
-    * @post: converts events to json and saves to file
-    * @return: nothing
-    */
+    /**
+     * Converts events to json and saves to file
+     *
+     * @throws IOException
+     */
     public void saveEvents() throws IOException {
         String eventJson = gson.toJson(events);
 
         createFile(eventJson, "res/events.txt");
     }
 
-    /*
-    * @pre: nothing
-    * @post: converts user data to json and save to file
-    * @return: nothing
-    */
+    /**
+     * Converts user data to json and save to file
+     *
+     * @throws IOException
+     */
     public void saveUsers() throws IOException {
         String userJson = gson.toJson(users);
 
         createFile(userJson, "res/users.txt");
     }
 
-    /*
-    * @pre: String of json data and file name
-    * @post: writes json data to file
-    * @return: nothing
+    /**
+     * Writes json data to file
+     *
+     * @param json String representing json data
+     * @param fileName String representing file name
+     * @throws IOException
      */
     public void createFile(String json, String fileName) throws IOException {
         writer = new FileWriter(fileName);
@@ -104,10 +104,13 @@ public class DairyFarmerClient {
         writer.close();
     }
 
-    /*
-    * @pre: requires a date to get specific events for that day
-    * @post: nothing
-    * @return: list of events for the provided date
+    /**
+     * Returns list of events for specific date
+     *
+     * @param date LocalDate to access events from specific day
+     * @return list of events for the provided date
+     * @throws IOException
+     * @see LocalDate
      */
     public List<Event> getEvents(LocalDate date) throws IOException {
         //TODO: not sure if we need to check containsKey if event list does not exist
@@ -115,10 +118,17 @@ public class DairyFarmerClient {
         return events.get(date);
     }
 
-    /*
-    * @pre: requires an eventName, creatorName, date and a list of times
-    * @post: creates event and adds to hashmap of events
-    * @return: nothing
+    /**
+     * Creates an event with specified information
+     *
+     * @param eventName String representing event name
+     * @param creatorName String representing creator name
+     * @param date LocalDate representing day of event
+     * @param times List of times for event
+     * @throws IOException
+     * @see LocalDate
+     * @see Time
+     * @see List
      */
     public void createEvent(String eventName, String creatorName, LocalDate date, List<Time> times) throws IOException {
         //TODO: maybe have list of times with their own list of attendees (that way we know who is available at what time)?
@@ -136,10 +146,13 @@ public class DairyFarmerClient {
         }
     }
 
-    /*
-    * @pre: requires a date, and event name
-    * @post: if events exists, delete event from hashmap
-    * @return: nothing
+    /**
+     * Deletes and event if it exists
+     *
+     * @param date used to look up event list
+     * @param eventName String to find specific event
+     * @throws IOException
+     * @see LocalDate
      */
     public void deleteEvent(LocalDate date, String eventName) throws IOException {
         List<Event> events = getEvents(date);
@@ -151,32 +164,35 @@ public class DairyFarmerClient {
 
     }
 
-    /*
-    * @pre: requires a username, and password, and if the user is an admin
-    * @post: checks if user exits, then adds it to the user hashmap if it doesnt
-    * @return: nothing (may change to a bool)
+    /**
+     * Creates a user with specified information
+     *
+     * @param username String representing username
+     * @param password String representing password
+     * @param isAdmin boolean representing admin status of user
      */
-    public void createUser(User user)
+    public void createUser(String username, String password, boolean isAdmin)
     {
         //TODO Throw error stating that username is taken
 
     }
 
-    /*
-    * @pre: requires a username
-    * @post: finds and removes a user from the know user list
-    * @return: //TODO I think this should be a bool to see if a user was deleted or not.
+    /**
+     * Deletes user with specified username
+     *
+     * @param username String representing username
      */
-    public void deleteUser(User user)
+    public void deleteUser(String username)
     {
         //TODO make sure this doesnt break
 
     }
 
-    /*
-    * @pre: nothing
-    * @post: nothing
-    * @return: returns hashmap of users
+    /**
+     * Returns a list of users
+     *
+     * @return users
+     * @see List
      */
     public List<User> getUsers() {
         return null;

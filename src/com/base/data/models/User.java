@@ -1,83 +1,84 @@
 package com.base.data.models;
 
-public class User
-{
-  private String name;
-  private String password;
-  private boolean isAdmin;
+public class User {
+    private String name;
+    private String password;
+    private boolean isAdmin;
 
-  /*
-  * @pre: String representing userName, password, and a boolean to determine admin status
-  * @post: assign local variables to passed in values
-  * @return: none
-   */
-  public User (
-  String name,
-  String password,
-  boolean isAdmin)
-  {
-    this.name = name;
-    this.password = password;
-    this.isAdmin = isAdmin;
-  }
+    /**
+     * Creates a user with the specified values
+     *
+     * @param name String representing username
+     * @param password String representing password
+     * @param isAdmin boolean to determine admin status
+     */
+    public User (
+            String name,
+            String password,
+            boolean isAdmin)
+    {
+        this.name = name;
+        this.password = password;
+        this.isAdmin = isAdmin;
+    }
 
-  /*
-  * @pre: none
-  * @post: none
-  * @return: returns the username
-   */
-  public String getName()
-  {
-    return name;
-  }
+    /**
+     * Returns the object's username
+     *
+     * @return the username
+     */
+    public String getName()
+    {
+        return name;
+    }
 
-  /*
-  * @pre: A valid string
-  * @post: re-assigns the member variable username
-  * @return: none
-   */
-  public void setName(String name)
-  {
-    this.name = name;
-  }
+    /**
+     * Re-assigns the member variable username
+     *
+     * @param name String representing username
+     */
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 
-  /*
-  * @pre: none
-  * @post: none
-  * @return: returns the password
-   */
-  public String getPassword()
-  {
-    return password;
-  }
+    /**
+     * Returns the object's password
+     *
+     * @return the password
+     */
+    public String getPassword()
+    {
+        return password;
+    }
 
-  /*
-  * @pre: A valid string
-  * @post: re-assigns the member variable password
-  * @return: none
-   */
-  public void setPassword(String password)
-  {
-    this.password = password;
-  }
+    /**
+     * Re-assigns the member variable password
+     *
+     * @param password String representing user's password
+     */
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
 
-  /*
-  * @pre: none
-  * @post: none
-  * @return: returns the isAdmin value
-   */
-  public boolean getAdmin()
-  {
-    return isAdmin;
-  }
+    /**
+     * Returns user admin status
+     *
+     * @return isAdmin boolean
+     */
+    public boolean getAdmin()
+    {
+        return isAdmin;
+    }
 
-  /*
-  * @pre: A valid boolean
-  * @post: re-assigns the member variable isAdmin
-  * @return: none
-   */
-  public void setAdmin(boolean isAdmin)
-  {
-    this.isAdmin = isAdmin;
-  }
+    /**
+     * Sets the user admin status
+     *
+     * @param isAdmin boolean representing if the user is an admin
+     */
+    public void setAdmin(boolean isAdmin)
+    {
+        this.isAdmin = isAdmin;
+    }
 }
