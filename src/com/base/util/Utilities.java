@@ -26,7 +26,12 @@ public class Utilities {
         return true;
     }
 
-    //TODO: fix this lol
+    /**
+     * Signify if the username is taken or not
+     * @param existingUsers a hashmap of existing users with taken usernames
+     * @param username the username the user wants to use with their new account
+     * @return true if the username is not taken
+     */
     static boolean userExists(HashMap<String, User> existingUsers, String username) {
         return (existingUsers.containsKey(username));
     }
