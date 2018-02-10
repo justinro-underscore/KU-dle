@@ -9,9 +9,7 @@ import java.util.*;
  */
 public class Users {
 
-    //TODO: dont set user_list to anything
-
-    private HashMap<String, User> user_list = new HashMap<>();
+    private HashMap<String, User> user_list;
 
     /**
      * Constructor, takes a populated hashmap of user objects and stores it in this object
@@ -31,7 +29,7 @@ public class Users {
 
     /**
      * Takes a hashmap of user objects and SETS (cuz its a setter) to our user_list
-     * @param users is a hashmap 
+     * @param users is a hashmap
      */
     public void setUsers(HashMap<String, User> users) {
         this.user_list = users;
