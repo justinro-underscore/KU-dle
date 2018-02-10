@@ -8,35 +8,30 @@ import java.util.*;
 * Interface for gson to convert json of users to a HashMap of users
  */
 public class Users {
-    /*
-    * @pre: Takes in a hashmap of users with username as key
-    * @post: assign local variable to passed in value
-    * @return: nothing
-     */
+
+    //TODO: dont set user_list to anything
+
     private HashMap<String, User> user_list = new HashMap<>();
 
-    /*
-    * @pre: takes in populated HashMap of users
-    * @post: sets HashMap of users to passed in users
-    * @return: nothing
+    /**
+     * Constructor, takes a populated hashmap of user objects and stores it in this object
+     * @param users, a hashmap
      */
     public Users(HashMap<String, User> users) {
         this.user_list = users;
     }
 
-    /*
-    * @pre: nothing
-    * @post: nothing
-    * @return: users
+    /**
+     * Just a getter bro
+     * @return returns the hashmap of user objects
      */
     public HashMap<String, User> getUsers() {
         return this.user_list;
     }
 
-    /*
-    * @pre: takes in hashmap of users
-    * @post: sets hashmap of users to passed in users
-    * @return: nothing
+    /**
+     * Takes a hashmap of user objects and SETS (cuz its a setter) to our user_list
+     * @param users is a hashmap 
      */
     public void setUsers(HashMap<String, User> users) {
         this.user_list = users;

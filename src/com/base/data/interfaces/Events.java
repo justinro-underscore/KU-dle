@@ -9,28 +9,25 @@ import java.util.List;
 public class Events {
     private HashMap<LocalDate, List<Event>> events;
 
-    /*
-    * @pre: Takes in a hashmap of events with date as key
-    * @post: assign local variable to passed in value
-    * @return: nothing
+    /**
+     * Creates a hashmap of event objects
+     * @return nothing
      */
     public Events(HashMap<LocalDate, List<Event>> events) {
         this.events = events;
     }
 
-    /*
-    * @pre: nothing
-    * @post: nothing
-    * @return: events
+    /**
+     * Just a getter, you know how to use these
+     * @return the hashmap of events
      */
     public HashMap<LocalDate, List<Event>> getEvents() {
         return events;
     }
 
-    /*
-    * @pre: takes in a hashmap of events with date as key
-    * @post: re-assigns the member variable events
-    * @return: nothing
+    /**
+     * Do I really need to explain a setter?
+     * @param events
      */
     public void setEvents(HashMap<LocalDate, List<Event>> events) {
         this.events = events;
