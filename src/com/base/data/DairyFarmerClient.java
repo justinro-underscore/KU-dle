@@ -180,20 +180,27 @@ public class DairyFarmerClient {
      * Deletes user with specified username
      *
      * @param username String representing username
+     * @return true if user was deleted else false
      */
-    public void deleteUser(String username)
+    public boolean deleteUser(String username)
     {
         //TODO make sure this doesnt break
+        if (users.containsKey(username)) {
+            users.remove(username);
+            return true;
+        }
 
+        return false;
     }
 
     /**
-     * Returns a list of users
+     * Returns a hashmap of users
      *
      * @return users
-     * @see List
+     * @see HashMap
+     * @see User
      */
-    public List<User> getUsers() {
-        return null;
+    public HashMap<String, User> getUsers() {
+        return users;
     }
 }
