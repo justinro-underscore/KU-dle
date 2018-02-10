@@ -5,11 +5,11 @@ import com.base.data.interfaces.Users;
 import com.base.data.models.Event;
 import com.base.data.models.User;
 import com.base.util.Time;
-import com.google.gson.Gson;
+import com.fatboyindustrial.gsonjavatime.Converters;
+import com.google.gson.*;
 
 import java.io.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.*;
 
 public class DairyFarmerClient {
@@ -24,7 +24,7 @@ public class DairyFarmerClient {
      * Initializes gson object
      */
     public DairyFarmerClient() {
-        gson = new Gson();
+        gson = Converters.registerAll(new GsonBuilder()).create();
     }
 
     /**
@@ -62,6 +62,7 @@ public class DairyFarmerClient {
         reader = new BufferedReader(new FileReader("res/events.txt"));
 
         String json = reader.readLine();
+        System.out.println(json);
         Events tempEvents = gson.fromJson(json, Events.class);
 
         events = tempEvents.getEvents();
@@ -73,7 +74,8 @@ public class DairyFarmerClient {
      * @throws IOException If an input or output exception occurred
      */
     public void saveEvents() throws IOException {
-        String eventJson = gson.toJson(events);
+        Events tempEvents = new Events(events);
+        String eventJson = gson.toJson(tempEvents);
 
         createFile(eventJson, "res/events.txt");
     }
@@ -84,7 +86,8 @@ public class DairyFarmerClient {
      * @throws IOException If an input or output exception occurred
      */
     public void saveUsers() throws IOException {
-        String userJson = gson.toJson(users);
+        Users tempUsers = new Users(users);
+        String userJson = gson.toJson(tempUsers);
 
         createFile(userJson, "res/users.txt");
     }
@@ -107,10 +110,9 @@ public class DairyFarmerClient {
      *
      * @param date LocalDate to access events from specific day
      * @return list of events for the provided date
-     * @throws IOException If an input or output exception occurred
      * @see LocalDate
      */
-    public List<Event> getEvents(LocalDate date) throws IOException {
+    public List<Event> getEvents(LocalDate date) {
 
         return events.get(date);
     }
@@ -122,14 +124,13 @@ public class DairyFarmerClient {
      * @param creatorName String representing creator name
      * @param date LocalDate representing day of event
      * @param times List of times for event
-     * @throws IOException If an input or output exception occurred
      * @see LocalDate
      * @see Time
      * @see List
      */
-    public void createEvent(String eventName, String creatorName, LocalDate date, List<Time> times) throws IOException {
+    public void createEvent(String eventName, String creatorName, LocalDate date, List<Time> times) {
         Event event = new Event(eventName, creatorName, date, times);
-
+        if (events == null) {System.out.println("NULL");}
         if (events.containsKey(date)) {
             events.get(date).add(event);
         } else {
