@@ -62,7 +62,6 @@ public class DairyFarmerClient {
         reader = new BufferedReader(new FileReader("res/events.txt"));
 
         String json = reader.readLine();
-        System.out.println(json);
         Events tempEvents = gson.fromJson(json, Events.class);
 
         events = tempEvents.getEvents();

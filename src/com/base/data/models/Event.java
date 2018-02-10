@@ -111,6 +111,15 @@ public class Event {
 
     @Override
     public String toString() {
-        return eventName + ", " + creatorName + ", " + date.toString() + ", # of Times: " + times.size();
+        StringBuilder builder = new StringBuilder();
+        builder.append(eventName + ", " + creatorName + ", " + date.toString() + ", ");
+        for (Time time : times) {
+            builder.append("Time: " + time.getTime() + ", ");
+            for (User user : time.getAttendees()) {
+                builder.append(" Name: " + user.getName() + ", ");
+            }
+        }
+
+        return builder.toString();
     }
 }
