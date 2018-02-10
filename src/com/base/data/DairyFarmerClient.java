@@ -62,7 +62,6 @@ public class DairyFarmerClient {
         reader = new BufferedReader(new FileReader("res/events.txt"));
 
         String json = reader.readLine();
-        System.out.println(json);
         Events tempEvents = gson.fromJson(json, Events.class);
 
         events = tempEvents.getEvents();
@@ -148,14 +147,17 @@ public class DairyFarmerClient {
      * @param eventName String to find specific event
      * @throws IOException If an input or output exception occurred
      * @see LocalDate
+     * @return true if a event was found and it was deleted
      */
-    public void deleteEvent(LocalDate date, String eventName) throws IOException {
+    public boolean deleteEvent(LocalDate date, String eventName) throws IOException {
         List<Event> events = getEvents(date);
         for(Event event : events){
             if(event.getEventName().equals(eventName)){
                 events.remove(event);
+                return true;
             }
         }
+        return false;
 
     }
 
@@ -206,5 +208,12 @@ public class DairyFarmerClient {
      */
     public HashMap<String, User> getUsers() {
         return users;
+    }
+
+    public User getUser(String username) {
+        if(users.containsKey(username)){
+            return users.get(username);
+        }
+        return null;
     }
 }
