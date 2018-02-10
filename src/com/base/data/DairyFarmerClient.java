@@ -53,7 +53,6 @@ public class DairyFarmerClient {
      * @throws IOException If an input or output exception occurred
      */
     public void initEvents() throws IOException {
-        //TODO: maybe change path to a constant?
         File eventsFile = new File("res/events.txt");
         if (!eventsFile.exists()) {
             events = new HashMap<>();
@@ -112,7 +111,6 @@ public class DairyFarmerClient {
      * @see LocalDate
      */
     public List<Event> getEvents(LocalDate date) throws IOException {
-        //TODO: not sure if we need to check containsKey if event list does not exist
 
         return events.get(date);
     }
@@ -130,7 +128,6 @@ public class DairyFarmerClient {
      * @see List
      */
     public void createEvent(String eventName, String creatorName, LocalDate date, List<Time> times) throws IOException {
-        //TODO: only if date exists in hashmap add event -> else add date and list with event to hashmap
         Event event = new Event(eventName, creatorName, date, times);
 
         if (events.containsKey(date)) {
@@ -178,7 +175,7 @@ public class DairyFarmerClient {
         }
         else
         {
-          return(false); 
+          return(false);
         }
 
     }
