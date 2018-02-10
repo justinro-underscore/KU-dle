@@ -8,9 +8,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -21,12 +18,13 @@ import javafx.stage.Stage;
 
 public class CalendarUI extends Application
 {
-	@FXML private Label lblCurrentMonth;
-	@FXML private Label lblSelectedDate;
+	@FXML private Label lblCurrentMonth; // Shows what month is currently showing
+	@FXML private Label lblSelectedDate; // Shows what day is currently selected
 	private Image arrow = new Image(getClass().getResourceAsStream("Arrow.png"));
 	@FXML private ImageView btnMonthLeft;
 	@FXML private ImageView btnMonthRight;
 
+	// Calendar boxes
 	private Label[][] calendarDateLabels = new Label[6][7];
 	@FXML private Label lblDay56;
 	@FXML private Label lblDay55;
@@ -115,6 +113,7 @@ public class CalendarUI extends Application
 	@FXML private Rectangle boxDay01;
 	@FXML private Rectangle boxDay00;
 
+	// Color palettes
 	@FXML private Color clrDeactivated = Color.web("#5a5a5a");
 	@FXML private Color clrActivated = Color.web("#d9d9d9");
 	@FXML private Color clrCurrDate = Color.web("#ffafaf");
@@ -122,6 +121,7 @@ public class CalendarUI extends Application
 
 	@FXML private ListView<String> listView;
 
+	// For displays
 	private String[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 	private String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
@@ -130,20 +130,29 @@ public class CalendarUI extends Application
 	private int selDateRow = 0; // Row index of selected date
 	private int selDateDay = 0; // Day index of selected date
 
+	/**
+	 * Where the application launches from
+	 * @param args What is passed in (don't worry about this)
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
 
+	/**
+	 * Sets the stage and initializes the program
+	 * @param stage The stage of the application
+	 */
 	public void start(Stage stage) throws Exception
 	{
-		FXMLLoader load = new FXMLLoader(getClass().getResource("/CalendarUI.fxml")); // You might have to change this to "\\Calendar.fxml"
-		load.setController(this);
+		FXMLLoader load = new FXMLLoader(getClass().getResource("/CalendarUI.fxml")); // You may have to change the path in order to access CalendarUI.fxml TODO make sure this works
+		load.setController(this); // Makes it so that you can control the UI using this class
 		Parent root = (Parent) load.load();
 		Scene scene = new Scene(root);
 
 		btnMonthLeft.setImage(arrow);
 		btnMonthRight.setImage(arrow);
 
+		// Start the application
 		stage.setTitle("Calendar");
 		stage.setScene(scene);
 		stage.show();
@@ -153,6 +162,24 @@ public class CalendarUI extends Application
 		initializeListeners();
 	}
 
+	/**
+	 * Initializes and sets the current date
+	 */
+	private void setCurrDate()
+	{
+		String temp = LocalDateTime.now().toString(); // Gets the current date
+		currentDate[2] = Integer.parseInt(temp.substring(0, 4)); // Year
+		currentDate[1] = Integer.parseInt(temp.substring(8, 10)); // Day
+		currentDate[0] = Integer.parseInt(temp.substring(5, 7)); // Month
+		for(int i = 0; i < 3; i++)
+		{
+			selectedDate[i] = currentDate[i]; // Makes the selected date the current date at the initialization of the program
+		}
+	}
+
+	/**
+	 * Populates the calendar box arrays with the FXML labels and boxes
+	 */
 	private void setupCalendarBoxes()
 	{
 		calendarDateLabels[0][0] = lblDay00;
@@ -242,20 +269,29 @@ public class CalendarUI extends Application
 		calendarDateBoxes[5][6] = boxDay56;
 	}
 
+	/**
+	 * Sets the functions that run when the user clicks on certain objects
+	 */
 	private void initializeListeners()
 	{
+		// Goes back a month
 		btnMonthLeft.setOnMouseClicked(e ->
 		{
 			changeMonth(true, 1);
 		});
+
+		// Goes forward a month
 		btnMonthRight.setOnMouseClicked(e ->
 		{
 			changeMonth(false, 1);
 		});
+
+		// Sets all of the boxes to change the selected date when they are clicked on
 		for(int rowCal = 0; rowCal < 6; rowCal++)
 		{
 			for(int dayCal = 0; dayCal < 7; dayCal++)
 			{
+				// These must be final because in order for the functions to run correctly they must use final variables
 				final int row = rowCal;
 				final int day = dayCal;
 				calendarDateBoxes[rowCal][dayCal].setOnMouseClicked(e ->
@@ -270,100 +306,109 @@ public class CalendarUI extends Application
 		}
 	}
 
+	/**
+	 * Goes forward or backward a month on the calendar pane
+	 * @param left If true, we go back a month, if false, we go forward a month
+	 * @param day The day that is to be selected
+	 */
 	private void changeMonth(boolean left, int day)
 	{
+		// Go back a month
 		if(left)
 		{
 			selectedDate[0]--;
-			if(selectedDate[0] == 0)
+			if(selectedDate[0] == 0) // Wrap around
 			{
-				selectedDate[0] = 12;
-				selectedDate[2]--;
+				selectedDate[0] = 12; // Go to December
+				selectedDate[2]--; // Go back a year
 			}
 			selectedDate[1] = day;
 			showChangedMonth();
 		}
-		else
+		else // Go forward a month
 		{
 			selectedDate[0]++;
-			if(selectedDate[0] == 13)
+			if(selectedDate[0] == 13) // Wrap around
 			{
-				selectedDate[0] = 1;
-				selectedDate[2]++;
+				selectedDate[0] = 1; // Go to January
+				selectedDate[2]++; // Go forward a year
 			}
 			selectedDate[1] = day;
 			showChangedMonth();
 		}
 	}
 
+	/**
+	 * Changes the selected date to the actual selected date
+	 * @param row The row of the new date
+	 * @param day The day of the week of the new date
+	 */
 	private void changeDate(int row, int day)
 	{
-		selectedDate[1] = Integer.parseInt(calendarDateLabels[row][day].getText());
-		if(calendarDateBoxes[row][day].getFill().equals(clrDeactivated))
+		selectedDate[1] = Integer.parseInt(calendarDateLabels[row][day].getText()); // Get selected day
+		if(calendarDateBoxes[row][day].getFill().equals(clrDeactivated)) // If the day is not in the current month...
 		{
-			if(selectedDate[1] >= 21)
+			// ... Change the month
+			if(selectedDate[1] >= 21) // If the user clicks on the previous month
 				changeMonth(true, selectedDate[1]);
-			else
+			else // If the user clicks on the next month
 				changeMonth(false, selectedDate[1]);
 		}
-		else
+		else // If the day is in the current month
 		{ // TODO Make it so that if there are events on the day, make the day another color
+			// If the old selected day was the current day
 			if(Integer.parseInt(calendarDateLabels[selDateRow][selDateDay].getText()) == currentDate[1] && currentDate[0] == selectedDate[0] && currentDate[2] == selectedDate[2])
 				calendarDateBoxes[selDateRow][selDateDay].setFill(clrCurrDate);
 			else
-				calendarDateBoxes[selDateRow][selDateDay].setFill(clrActivated);
+				calendarDateBoxes[selDateRow][selDateDay].setFill(clrActivated); // Otherwise just set it back to activated
 			calendarDateBoxes[row][day].setFill(clrSelDate);
 			selDateRow = row;
 			selDateDay = day;
-			updateSelLabel(day);
+			updateSelLabel();
 		}
 	}
 
-	private void setCurrDate()
-	{
-		String temp = LocalDateTime.now().toString();
-		currentDate[2] = Integer.parseInt(temp.substring(0, 4)); // Year
-		currentDate[1] = Integer.parseInt(temp.substring(8, 10)); // Day
-		currentDate[0] = Integer.parseInt(temp.substring(5, 7)); // Month
-		for(int i = 0; i < 3; i++)
-		{
-			selectedDate[i] = currentDate[i];
-		}
-	}
-
+	/**
+	 * Tell the application to change the month
+	 */
 	private void showChangedMonth()
 	{
-		int dayOfTheWeek = getDayOfTheWeek(1, selectedDate[0], selectedDate[2]);
+		int dayOfTheWeek = getDayOfTheWeek(1, selectedDate[0], selectedDate[2]); // Gets the day of the week of the first day of the month
+		System.out.println(dayOfTheWeek);
 
-		int[][] calendarDates = new int[6][7];
-		int prevMonthDays;
-		if(selectedDate[0] == 1)
+		int[][] calendarDates = new int[6][7]; // The dates to be written to the program
+		int prevMonthDays; // Get the amount of days in the previous month
+		if(selectedDate[0] == 1) // Wrap
 			prevMonthDays = getAmtOfDays(12, 0); // Second parameter doesn't matter because month is not February
 		else
 			prevMonthDays = getAmtOfDays(selectedDate[0] - 1, selectedDate[2]);
-		if(dayOfTheWeek == 0)
+		if(dayOfTheWeek == 0) // This is so if the first day of the month is on a Sunday, start the month on the second line
 			dayOfTheWeek += 7;
-		for(int dayCal = 0; dayCal < 7; dayCal++) // Do first row
+		for(int dayCal = 0; dayCal < 7; dayCal++) // Populate first row with the last of last month's dates
 		{
-			if(dayOfTheWeek == 0)
-				calendarDates[0][dayCal] = (prevMonthDays - 7 + dayCal) % prevMonthDays + 1;
-			else
-				calendarDates[0][dayCal] = (prevMonthDays - dayOfTheWeek + dayCal) % prevMonthDays + 1;
+			calendarDates[0][dayCal] = (prevMonthDays - dayOfTheWeek + dayCal) % prevMonthDays + 1;
 		}
-		int dayIndex = (prevMonthDays - dayOfTheWeek + 7) % prevMonthDays;
-		int currMonthDays = getAmtOfDays(selectedDate[0], selectedDate[2]);
+		int dayIndex = (prevMonthDays - dayOfTheWeek + 7) % prevMonthDays; // The index of the current date
+		int currMonthDays = getAmtOfDays(selectedDate[0], selectedDate[2]); // Get the amount of days in the current month
+		// Go through all of the calendar cells
 		for(int rowCal = 1; rowCal < 6; rowCal++)
 		{
 			for(int dayCal = 0; dayCal < 7; dayCal++)
 			{
-				calendarDates[rowCal][dayCal] = dayIndex % currMonthDays + 1;
+				calendarDates[rowCal][dayCal] = dayIndex % currMonthDays + 1; // Set the date label
 				dayIndex++;
 			}
 		}
-		populateCalendar(calendarDates);
+		populateCalendar(calendarDates); // Update the calendar UI
 	}
 
-	// Returns the selected date's day of the week
+	/**
+	 * Returns the selected date's day of the week
+	 * @param day The day of the desired date
+	 * @param monthParam The month of the desired date
+	 * @param yearParam The year of the desire date
+	 * @return dayOfTheWeek The index of the day of the week (0 = Sunday,..., 6 = Saturday)
+	 */
 	private int getDayOfTheWeek(int day, int monthParam, int yearParam)
 	{
 		int month = monthParam - 2;
@@ -373,19 +418,27 @@ public class CalendarUI extends Application
 		if(month >= 11)
 			year--;
 		int century = yearParam / 100;
-
-		int dayOfTheWeek = Math.abs((day + (int) Math.floor((2.6 * month) - 0.2) + year + (year / 4) + (century / 4) - (2 * century)) % 7);
+		// Uses Gauss's Algorithm to determine the day of the week - https://en.wikipedia.org/wiki/Determination_of_the_day_of_the_week
+		int dayOfTheWeek = (day + (int) Math.floor((2.6 * month) - 0.2) + year + (year / 4) + (century / 4) - (2 * century)) % 7;
+		if(dayOfTheWeek < 0)
+			dayOfTheWeek += 7;
 
 		return dayOfTheWeek;
 	}
 
+	/**
+	 * Returns the amount of days in the specified month
+	 * @param m Month of the desired amount of days
+	 * @param y The year... Only useful if the month is February (for leap years)
+	 * @return The amount of days
+	 */
 	private int getAmtOfDays(int m, int y)
 	{
-		if(m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12)
+		if(m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12) // January, March,..., December
 			return 31;
-		else if(m == 2)
+		else if(m == 2) // February
 		{
-			boolean isNine = false;
+			boolean isNine = false; // isNine means is 29 days
 			if(y % 4 == 0)
 			{
 				if(y % 100 == 0)
@@ -405,48 +458,55 @@ public class CalendarUI extends Application
 			return 30;
 	}
 
+	/**
+	 * Populates the calendar with the specified dates
+	 * @param calendarDates The array of date labels
+	 */
 	private void populateCalendar(int[][] calendarDates)
 	{
-		Platform.runLater(() -> {
+		Platform.runLater(() -> { // In order to change the labels, you must use Platform.runLater
+			// Show the current month shown (at the top of the pane)
 			String currMonthLabel = months[selectedDate[0]-1];
-			if(selectedDate[2] != currentDate[2])
+			if(selectedDate[2] != currentDate[2]) // If the selected year is not the current year
 				currMonthLabel += " " + selectedDate[2];
 			lblCurrentMonth.setText(currMonthLabel);
 
-			int day = 0;
-			boolean hitFirst = false;
+			// Fill the calendar with labels
+			boolean hitFirst = false; // If the index has hit the first day of the month
 			for(int rowCal = 0; rowCal < 6; rowCal++)
 			{
 				for(int dayCal = 0; dayCal < 7; dayCal++)
 				{
 					if(calendarDates[rowCal][dayCal] == 1)
 						hitFirst = !hitFirst;
-					if(!hitFirst)
+					if(!hitFirst) // If the month is not selected
 						calendarDateBoxes[rowCal][dayCal].setFill(clrDeactivated); // Dark Gray - Deactivated
-					else if(calendarDates[rowCal][dayCal] == currentDate[1] && currentDate[0] == selectedDate[0] && currentDate[2] == selectedDate[2])
+					else if(calendarDates[rowCal][dayCal] == currentDate[1] && currentDate[0] == selectedDate[0] && currentDate[2] == selectedDate[2]) // If the date is the current date
 						calendarDateBoxes[rowCal][dayCal].setFill(clrCurrDate); // Red - Current date
-					else
+					else // If the date is in the current month
 						calendarDateBoxes[rowCal][dayCal].setFill(clrActivated); // Light Gray - Activated
-					if(calendarDates[rowCal][dayCal] == selectedDate[1] && hitFirst)
+					if(calendarDates[rowCal][dayCal] == selectedDate[1] && hitFirst) // If the cell is the selected date
 					{
 						calendarDateBoxes[rowCal][dayCal].setFill(clrSelDate); // Blue - Selected date
 						selDateRow = rowCal;
 						selDateDay = dayCal;
-						day = dayCal;
 					}
-					calendarDateLabels[rowCal][dayCal].setText("" + calendarDates[rowCal][dayCal]);
+					calendarDateLabels[rowCal][dayCal].setText("" + calendarDates[rowCal][dayCal]); // Set the labels
 				}
 			}
 
-			updateSelLabel(day);
+			updateSelLabel(); // Updates the selected day label
 		});
 	}
 
-	private void updateSelLabel(int day)
+	/**
+	 * Updates the selected day label
+	 */
+	private void updateSelLabel()
 	{
 		Platform.runLater(() ->
 		{
-			String selDateLabel = days[day] + ", " + months[selectedDate[0]-1] + " " + selectedDate[1] + ", " + selectedDate[2];
+			String selDateLabel = days[selDateDay] + ", " + months[selectedDate[0]-1] + " " + selectedDate[1] + ", " + selectedDate[2];
 			lblSelectedDate.setText(selDateLabel);
 		});
 	}
