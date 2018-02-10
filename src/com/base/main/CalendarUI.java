@@ -1,21 +1,37 @@
 package com.base.main;
 
+import java.time.LocalDateTime;
+
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class CalendarUI extends Application
 {
 	@FXML private Label lblCurrentMonth;
 	@FXML private Label lblCurrentDate;
-	@FXML private Label btnMonthLeft;
-	@FXML private Label btnMonthRight;
-	@FXML private Label lblDay47;
+	private Image arrow = new Image(getClass().getResourceAsStream("Arrow.png"));
+	@FXML private ImageView btnMonthLeft;
+	@FXML private ImageView btnMonthRight;
+
+	private Label[][] calendarDateLabels = new Label[6][7];
+	@FXML private Label lblDay56;
+	@FXML private Label lblDay55;
+	@FXML private Label lblDay54;
+	@FXML private Label lblDay53;
+	@FXML private Label lblDay52;
+	@FXML private Label lblDay51;
+	@FXML private Label lblDay50;
 	@FXML private Label lblDay46;
 	@FXML private Label lblDay45;
 	@FXML private Label lblDay44;
@@ -52,45 +68,56 @@ public class CalendarUI extends Application
 	@FXML private Label lblDay01;
 	@FXML private Label lblDay00;
 
-
-	@FXML private Label boxDay47;
-	@FXML private Label boxDay46;
-	@FXML private Label boxDay45;
-	@FXML private Label boxDay44;
-	@FXML private Label boxDay43;
-	@FXML private Label boxDay42;
-	@FXML private Label boxDay41;
-	@FXML private Label boxDay40;
-	@FXML private Label boxDay36;
-	@FXML private Label boxDay35;
-	@FXML private Label boxDay34;
-	@FXML private Label boxDay33;
-	@FXML private Label boxDay32;
-	@FXML private Label boxDay31;
-	@FXML private Label boxDay30;
-	@FXML private Label boxDay26;
-	@FXML private Label boxDay25;
-	@FXML private Label boxDay24;
-	@FXML private Label boxDay23;
-	@FXML private Label boxDay22;
-	@FXML private Label boxDay21;
-	@FXML private Label boxDay20;
-	@FXML private Label boxDay16;
-	@FXML private Label boxDay15;
-	@FXML private Label boxDay14;
-	@FXML private Label boxDay13;
-	@FXML private Label boxDay12;
-	@FXML private Label boxDay11;
-	@FXML private Label boxDay10;
-	@FXML private Label boxDay06;
-	@FXML private Label boxDay05;
-	@FXML private Label boxDay04;
-	@FXML private Label boxDay03;
-	@FXML private Label boxDay02;
-	@FXML private Label boxDay01;
-	@FXML private Label boxDay00;
+	private Rectangle[][] calendarDateBoxes = new Rectangle[6][7];
+	@FXML private Rectangle boxDay56;
+	@FXML private Rectangle boxDay55;
+	@FXML private Rectangle boxDay54;
+	@FXML private Rectangle boxDay53;
+	@FXML private Rectangle boxDay52;
+	@FXML private Rectangle boxDay51;
+	@FXML private Rectangle boxDay50;
+	@FXML private Rectangle boxDay46;
+	@FXML private Rectangle boxDay45;
+	@FXML private Rectangle boxDay44;
+	@FXML private Rectangle boxDay43;
+	@FXML private Rectangle boxDay42;
+	@FXML private Rectangle boxDay41;
+	@FXML private Rectangle boxDay40;
+	@FXML private Rectangle boxDay36;
+	@FXML private Rectangle boxDay35;
+	@FXML private Rectangle boxDay34;
+	@FXML private Rectangle boxDay33;
+	@FXML private Rectangle boxDay32;
+	@FXML private Rectangle boxDay31;
+	@FXML private Rectangle boxDay30;
+	@FXML private Rectangle boxDay26;
+	@FXML private Rectangle boxDay25;
+	@FXML private Rectangle boxDay24;
+	@FXML private Rectangle boxDay23;
+	@FXML private Rectangle boxDay22;
+	@FXML private Rectangle boxDay21;
+	@FXML private Rectangle boxDay20;
+	@FXML private Rectangle boxDay16;
+	@FXML private Rectangle boxDay15;
+	@FXML private Rectangle boxDay14;
+	@FXML private Rectangle boxDay13;
+	@FXML private Rectangle boxDay12;
+	@FXML private Rectangle boxDay11;
+	@FXML private Rectangle boxDay10;
+	@FXML private Rectangle boxDay06;
+	@FXML private Rectangle boxDay05;
+	@FXML private Rectangle boxDay04;
+	@FXML private Rectangle boxDay03;
+	@FXML private Rectangle boxDay02;
+	@FXML private Rectangle boxDay01;
+	@FXML private Rectangle boxDay00;
 
 	@FXML private ListView<String> listView;
+
+	private String[] months = { "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"};
+	private String[] days = {"SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
+
+	private int[] currentDate = {0, 0, 0, 0, 0}; // (Month/Day/Year) + (Century, Year)
 
 	public static void main(String[] args) {
 		launch(args);
@@ -98,10 +125,210 @@ public class CalendarUI extends Application
 
 	public void start(Stage stage) throws Exception
 	{
-		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("CalendarUI.fxml")); // You might have to change this to "\\Calendar.fxml"
+//		try {
+//			scene = createRootScene(primaryStage);
+//			primaryStage.setTitle("Version Saver");
+//			primaryStage.setScene(scene);
+//			primaryStage.show();
+//			primaryStage.setOnCloseRequest(evt -> {});
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//		}
+
+		FXMLLoader load = new FXMLLoader(getClass().getResource("/CalendarUI.fxml")); // You might have to change this to "\\Calendar.fxml"
+		load.setController(this);
+		Parent root = (Parent) load.load();
 		Scene scene = new Scene(root);
+
+		btnMonthLeft.setImage(arrow);
+		btnMonthRight.setImage(arrow);
+
 		stage.setTitle("Calendar");
 		stage.setScene(scene);
 		stage.show();
+		startCalendar();
+		initializeListeners();
+	}
+
+	private void initializeListeners()
+	{
+		calendarDateLabels[0][0] = lblDay00;
+		calendarDateLabels[0][1] = lblDay01;
+		calendarDateLabels[0][2] = lblDay02;
+		calendarDateLabels[0][3] = lblDay03;
+		calendarDateLabels[0][4] = lblDay04;
+		calendarDateLabels[0][5] = lblDay05;
+		calendarDateLabels[0][6] = lblDay06;
+		calendarDateLabels[1][0] = lblDay10;
+		calendarDateLabels[1][1] = lblDay11;
+		calendarDateLabels[1][2] = lblDay12;
+		calendarDateLabels[1][3] = lblDay13;
+		calendarDateLabels[1][4] = lblDay14;
+		calendarDateLabels[1][5] = lblDay15;
+		calendarDateLabels[1][6] = lblDay16;
+		calendarDateLabels[2][0] = lblDay20;
+		calendarDateLabels[2][1] = lblDay21;
+		calendarDateLabels[2][2] = lblDay22;
+		calendarDateLabels[2][3] = lblDay23;
+		calendarDateLabels[2][4] = lblDay24;
+		calendarDateLabels[2][5] = lblDay25;
+		calendarDateLabels[2][6] = lblDay26;
+		calendarDateLabels[3][0] = lblDay30;
+		calendarDateLabels[3][1] = lblDay31;
+		calendarDateLabels[3][2] = lblDay32;
+		calendarDateLabels[3][3] = lblDay33;
+		calendarDateLabels[3][4] = lblDay34;
+		calendarDateLabels[3][5] = lblDay35;
+		calendarDateLabels[3][6] = lblDay36;
+		calendarDateLabels[4][0] = lblDay40;
+		calendarDateLabels[4][1] = lblDay41;
+		calendarDateLabels[4][2] = lblDay42;
+		calendarDateLabels[4][3] = lblDay43;
+		calendarDateLabels[4][4] = lblDay44;
+		calendarDateLabels[4][5] = lblDay45;
+		calendarDateLabels[4][6] = lblDay46;
+		calendarDateLabels[5][0] = lblDay50;
+		calendarDateLabels[5][1] = lblDay51;
+		calendarDateLabels[5][2] = lblDay52;
+		calendarDateLabels[5][3] = lblDay53;
+		calendarDateLabels[5][4] = lblDay54;
+		calendarDateLabels[5][5] = lblDay55;
+		calendarDateLabels[5][6] = lblDay56;
+
+		calendarDateBoxes[0][0] = boxDay00;
+		calendarDateBoxes[0][1] = boxDay01;
+		calendarDateBoxes[0][2] = boxDay02;
+		calendarDateBoxes[0][3] = boxDay03;
+		calendarDateBoxes[0][4] = boxDay04;
+		calendarDateBoxes[0][5] = boxDay05;
+		calendarDateBoxes[0][6] = boxDay06;
+		calendarDateBoxes[1][0] = boxDay10;
+		calendarDateBoxes[1][1] = boxDay11;
+		calendarDateBoxes[1][2] = boxDay12;
+		calendarDateBoxes[1][3] = boxDay13;
+		calendarDateBoxes[1][4] = boxDay14;
+		calendarDateBoxes[1][5] = boxDay15;
+		calendarDateBoxes[1][6] = boxDay16;
+		calendarDateBoxes[2][0] = boxDay20;
+		calendarDateBoxes[2][1] = boxDay21;
+		calendarDateBoxes[2][2] = boxDay22;
+		calendarDateBoxes[2][3] = boxDay23;
+		calendarDateBoxes[2][4] = boxDay24;
+		calendarDateBoxes[2][5] = boxDay25;
+		calendarDateBoxes[2][6] = boxDay26;
+		calendarDateBoxes[3][0] = boxDay30;
+		calendarDateBoxes[3][1] = boxDay31;
+		calendarDateBoxes[3][2] = boxDay32;
+		calendarDateBoxes[3][3] = boxDay33;
+		calendarDateBoxes[3][4] = boxDay34;
+		calendarDateBoxes[3][5] = boxDay35;
+		calendarDateBoxes[3][6] = boxDay36;
+		calendarDateBoxes[4][0] = boxDay40;
+		calendarDateBoxes[4][1] = boxDay41;
+		calendarDateBoxes[4][2] = boxDay42;
+		calendarDateBoxes[4][3] = boxDay43;
+		calendarDateBoxes[4][4] = boxDay44;
+		calendarDateBoxes[4][5] = boxDay45;
+		calendarDateBoxes[4][6] = boxDay46;
+		calendarDateBoxes[5][0] = boxDay50;
+		calendarDateBoxes[5][1] = boxDay51;
+		calendarDateBoxes[5][2] = boxDay52;
+		calendarDateBoxes[5][3] = boxDay53;
+		calendarDateBoxes[5][4] = boxDay54;
+		calendarDateBoxes[5][5] = boxDay55;
+		calendarDateBoxes[5][6] = boxDay56;
+	}
+
+	private void startCalendar()
+	{
+		setCurrDate();
+		System.out.println(currentDate[0] + "/" + currentDate[1] + "/" + currentDate[2]);
+		createCalendar();
+	}
+
+	private void setCurrDate()
+	{
+		String temp = LocalDateTime.now().toString();
+		System.out.println(temp);
+		currentDate[2] = Integer.parseInt(temp.substring(0, 4)); // Year
+		currentDate[1] = Integer.parseInt(temp.substring(8, 10)); // Day
+		currentDate[0] = Integer.parseInt(temp.substring(5, 7)); // Month
+	}
+
+	private void createCalendar()
+	{
+		int day = currentDate[1];
+		int month = currentDate[0] - 2;
+		if(month <= 0)
+			month += 12;
+		int year = currentDate[2] % 100;
+		if(month >= 11)
+			year--;
+		int century = currentDate[2] / 100;
+
+		int dayOfTheWeek = (day + (int) Math.floor((2.6 * month) - 0.2) + year + (year / 4) + (century / 4) - (2 * century)) % 7;
+		System.out.println(days[dayOfTheWeek]);
+
+		int[][] calendarDates = new int[6][7];
+		int prevMonthDays = getAmtOfDays(currentDate[0] - 1); // TODO What if it's January
+		for(int dayCal = 0; dayCal < 7; dayCal++) // Do first row
+		{
+			calendarDates[0][dayCal] = (prevMonthDays - dayOfTheWeek + dayCal) % prevMonthDays + 1;
+		}
+		int dayIndex = (prevMonthDays - dayOfTheWeek + 7) % prevMonthDays;
+		int currMonthDays = getAmtOfDays(currentDate[0]);
+		for(int rowCal = 1; rowCal < 6; rowCal++)
+		{
+			for(int dayCal = 0; dayCal < 7; dayCal++)
+			{
+				calendarDates[rowCal][dayCal] = (dayIndex) % currMonthDays + 1;
+				dayIndex++;
+			}
+		}
+		populateCalendar(calendarDates);
+	}
+
+	private int getAmtOfDays(int m)
+	{
+		if(m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12)
+			return 31;
+		else if(m == 2)
+		{
+			if(currentDate[2] % 4 == 0 && currentDate[2] % 100 == 0 && currentDate[2] % 400 == 0)
+				return 29;
+			else
+				return 28;
+		}
+		else
+			return 30;
+	}
+
+	private void populateCalendar(int[][] calendarDates)
+	{
+		Platform.runLater(() -> {
+			String currMonthLabel = months[currentDate[0]-1];
+			lblCurrentMonth.setText(currMonthLabel);
+
+			String currDateLabel = months[currentDate[0]-1] + " " + currentDate[1] + ", " + currentDate[2];
+			lblCurrentDate.setText(currDateLabel);
+
+			boolean hitFirst = false;
+			for(int rowCal = 0; rowCal < 6; rowCal++)
+			{
+				for(int dayCal = 0; dayCal < 7; dayCal++)
+				{
+					if(calendarDates[rowCal][dayCal] == 1)
+						hitFirst = !hitFirst;
+					if(!hitFirst)
+						calendarDateBoxes[rowCal][dayCal].setFill(Color.web("#5a5a5a"));
+					else if(calendarDates[rowCal][dayCal] == currentDate[1])
+						calendarDateBoxes[rowCal][dayCal].setFill(Color.BLUE);
+					else
+						calendarDateBoxes[rowCal][dayCal].setFill(Color.web("#d9d9d9"));
+					System.out.println(calendarDates[rowCal][dayCal]);
+					calendarDateLabels[rowCal][dayCal].setText("" + calendarDates[rowCal][dayCal]);
+				}
+			}
+		});
 	}
 }
