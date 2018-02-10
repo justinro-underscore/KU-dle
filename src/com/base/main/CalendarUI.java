@@ -1,20 +1,44 @@
 package com.base.main;
 
+
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
+
+
 
 public class CalendarUI extends Application
 {
@@ -23,6 +47,8 @@ public class CalendarUI extends Application
 	private Image arrow = new Image(getClass().getResourceAsStream("Arrow.png"));
 	@FXML private ImageView btnMonthLeft;
 	@FXML private ImageView btnMonthRight;
+	@FXML private Button btnCreateEvent;
+
 
 	// Calendar boxes
 	private Label[][] calendarDateLabels = new Label[6][7];
@@ -68,7 +94,10 @@ public class CalendarUI extends Application
 	@FXML private Label lblDay02;
 	@FXML private Label lblDay01;
 	@FXML private Label lblDay00;
+	@FXML private Label lblEventName;
+	
 
+	
 	private Rectangle[][] calendarDateBoxes = new Rectangle[6][7];
 	@FXML private Rectangle boxDay56;
 	@FXML private Rectangle boxDay55;
@@ -119,7 +148,9 @@ public class CalendarUI extends Application
 	@FXML private Color clrCurrDate = Color.web("#ffafaf");
 	@FXML private Color clrSelDate = Color.web("#a5e6fb");
 
-	@FXML private ListView<String> listView;
+	@FXML private ListView<String> listViewApproval;
+	@FXML private ListView<String> listViewAccept;
+
 
 	// For displays
 	private String[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -144,8 +175,84 @@ public class CalendarUI extends Application
 	 */
 	public void start(Stage stage) throws Exception
 	{
+
 		FXMLLoader load = new FXMLLoader(getClass().getResource("/CalendarUI.fxml")); // You may have to change the path in order to access CalendarUI.fxml TODO make sure this works
 		load.setController(this); // Makes it so that you can control the UI using this class
+
+//		TextInputDialog username = new TextInputDialog("Username");
+//		username.setTitle("Login Portal");
+//		username.setHeaderText("Calendar Login");
+//		username.setContentText("Username: ");
+//		Optional<String> theUsername = username.showAndWait();
+//		System.out.println(theUsername);
+//		TextInputDialog password= new TextInputDialog("Password");
+//		password.setTitle("Login Portal");
+//		password.setHeaderText("Calendar Login");
+//		password.setContentText("Password: ");
+//		Optional<String> thePassword = password.showAndWait();
+//		System.out.println(thePassword);
+		
+		
+		//http://code.makery.ch/blog/javafx-dialogs-official/
+		// Create the custom dialog.
+		Dialog<Pair<String, String>> dialog = new Dialog<>();
+		dialog.setTitle("Login Portal");
+		dialog.setHeaderText("Calendar Login");
+
+		// Set the icon (must be included in the project).
+		dialog.setGraphic(new ImageView(this.getClass().getResource("cow.png").toString()));
+
+		// Set the button types.
+		ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+		// Create the username and password labels and fields.
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20, 150, 10, 10));
+
+		TextField username = new TextField();
+		username.setPromptText("Username");
+		PasswordField password = new PasswordField();
+		password.setPromptText("Password");
+
+		grid.add(new Label("Username:"), 0, 0);
+		grid.add(username, 1, 0);
+		grid.add(new Label("Password:"), 0, 1);
+		grid.add(password, 1, 1);
+
+		// Enable/Disable login button depending on whether a username was entered.
+		Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+		loginButton.setDisable(true);
+
+		// Do some validation (using the Java 8 lambda syntax).
+		username.textProperty().addListener((observable, oldValue, newValue) -> {
+		    loginButton.setDisable(newValue.trim().isEmpty());
+		});
+
+		dialog.getDialogPane().setContent(grid);
+
+		// Request focus on the username field by default.
+		Platform.runLater(() -> username.requestFocus());
+
+		// Convert the result to a username-password-pair when the login button is clicked.
+		dialog.setResultConverter(dialogButton -> {
+		    if (dialogButton == loginButtonType) {
+		        return new Pair<>(username.getText(), password.getText());
+		    }
+		    return null;
+		});
+
+		Optional<Pair<String, String>> result = dialog.showAndWait();
+
+		result.ifPresent(usernamePassword -> {
+		    System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue());
+		});
+		
+		
+
+
 		Parent root = (Parent) load.load();
 		Scene scene = new Scene(root);
 
@@ -160,6 +267,11 @@ public class CalendarUI extends Application
 		setCurrDate();
 		showChangedMonth();
 		initializeListeners();
+		initializelistViewApproval();
+		initializelistViewAccepted();
+		
+		listViewPushed();
+//		createEvent();
 	}
 
 	/**
@@ -268,13 +380,42 @@ public class CalendarUI extends Application
 		calendarDateBoxes[5][5] = boxDay55;
 		calendarDateBoxes[5][6] = boxDay56;
 	}
+	private void initializelistViewApproval()
+	{
+		listViewApproval.getItems().add("Hacking Meeting - 2:00 PM");
+		listViewApproval.getItems().add("Pizza Night - 7:00 PM");
+
+	}
+	private void initializelistViewAccepted()
+	{
+		//listViewAccept.getItems().add("Justin is a nerd");
+		//listViewAccept.getItems().add("Justin is a nerd2");
+	}
 
 	/**
 	 * Sets the functions that run when the user clicks on certain objects
 	 */
+	
+	private void listViewPushed()
+	{
+		Platform.runLater(() -> {
+			listViewApproval.setOnMouseClicked(e ->{
+			String textArea = listViewApproval.getSelectionModel().getSelectedItem();
+			System.out.println(textArea);
+			lblEventName.setText(textArea);
+			});
+		});	
+	}
+	private void createEvent()
+	{
+		
+	}
 	private void initializeListeners()
 	{
-		// Goes back a month
+		btnCreateEvent.setOnAction(e ->
+		{
+			createEvent();
+		});
 		btnMonthLeft.setOnMouseClicked(e ->
 		{
 			changeMonth(true, 1);
