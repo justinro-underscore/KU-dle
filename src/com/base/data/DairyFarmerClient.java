@@ -130,8 +130,6 @@ public class DairyFarmerClient {
      * @see List
      */
     public void createEvent(String eventName, String creatorName, LocalDate date, List<Time> times) throws IOException {
-        //TODO: maybe have list of times with their own list of attendees (that way we know who is available at what time)?
-        //TODO: maybe add to list -> have list of events for each day and get specific by creator
         //TODO: only if date exists in hashmap add event -> else add date and list with event to hashmap
         Event event = new Event(eventName, creatorName, date, times);
 
@@ -184,7 +182,6 @@ public class DairyFarmerClient {
      */
     public boolean deleteUser(String username)
     {
-        //TODO make sure this doesnt break
         if (users.containsKey(username)) {
             users.remove(username);
             return true;
