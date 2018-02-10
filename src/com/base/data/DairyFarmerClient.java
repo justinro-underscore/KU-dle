@@ -150,13 +150,20 @@ public class DairyFarmerClient {
      * @return true if a event was found and it was deleted
      */
     public boolean deleteEvent(LocalDate date, String eventName) throws IOException {
-        List<Event> events = getEvents(date);
-        for(Event event : events){
+        List<Event> eventsForDate = getEvents(date);
+        Event eventToDelete = null;
+        for(Event event : eventsForDate){
             if(event.getEventName().equals(eventName)){
-                events.remove(event);
-                return true;
+                eventToDelete = event;
+                break;
             }
         }
+
+        if (eventToDelete != null) {
+            eventsForDate.remove(eventToDelete);
+            return true;
+        }
+
         return false;
 
     }
