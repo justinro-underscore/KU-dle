@@ -1,1 +1,1 @@
-{"events":{"0001-01-01":[{"eventName":"EVENT NAME","creatorName":"CREATOR NAME","date":"0001-01-01","times":[{"time":"01:01:00","attendees":[{"name":"Leon Kline","password":"ELECTRIC BUGALOO","isAdmin":false}]}]}]}}
+{"events":{"0001-01-01":[{"eventName":"EVENT NAME","creatorName":"CREATOR NAME","date":"0001-01-01","times":[{"time":"22:10:00","attendees":[{"name":"Leon Kline","password":"ELECTRIC BUGALOO","isAdmin":false}]}]}]}}
