@@ -170,9 +170,18 @@ public class DairyFarmerClient {
      * @param password String representing password
      * @param isAdmin boolean representing admin status of user
      */
-    public void createUser(String username, String password, boolean isAdmin)
+    public boolean createUser(String username, String password, boolean isAdmin)
     {
-        //TODO Throw error stating that username is taken
+        if(!users.containsKey(username))
+        {
+          User newUser = new User(username, password, isAdmin);
+          users.put(username, newUser);
+          return(true);
+        }
+        else
+        {
+          return(false); 
+        }
 
     }
 
