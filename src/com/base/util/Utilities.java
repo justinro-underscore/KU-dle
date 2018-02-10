@@ -1,5 +1,8 @@
 package com.base.util;
 
+import com.base.data.models.User;
+
+import java.util.HashMap;
 import java.util.List;
 
 public class Utilities {
@@ -24,7 +27,7 @@ public class Utilities {
     }
 
     //TODO: fix this lol
-    static boolean userExists() {
-        return false;
+    static boolean userExists(HashMap<String, User> existingUsers, String username) {
+        return (existingUsers.containsKey(username));
     }
 }
