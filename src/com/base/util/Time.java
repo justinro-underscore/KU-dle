@@ -9,12 +9,6 @@ public class Time {
     private LocalTime time;
     private List<User> attendees;
 
-    /*
-    * @pre: Takes in a time and list of users
-    * @post: assign local variables to passed in values
-    * @return: nothing
-     */
-
     /**
      * Constructor, signifies which users are available for a specific
      * time.

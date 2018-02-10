@@ -4,7 +4,7 @@ import com.base.data.models.User;
 
 import java.util.*;
 
-/*
+/**
 * Interface for gson to convert json of users to a HashMap of users
  */
 public class Users {
