@@ -8,6 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -19,7 +22,7 @@ import javafx.stage.Stage;
 public class CalendarUI extends Application
 {
 	@FXML private Label lblCurrentMonth;
-	@FXML private Label lblCurrentDate;
+	@FXML private Label lblSelectedDate;
 	private Image arrow = new Image(getClass().getResourceAsStream("Arrow.png"));
 	@FXML private ImageView btnMonthLeft;
 	@FXML private ImageView btnMonthRight;
@@ -112,13 +115,20 @@ public class CalendarUI extends Application
 	@FXML private Rectangle boxDay01;
 	@FXML private Rectangle boxDay00;
 
+	@FXML private Color clrDeactivated = Color.web("#5a5a5a");
+	@FXML private Color clrActivated = Color.web("#d9d9d9");
+	@FXML private Color clrCurrDate = Color.web("#ffafaf");
+	@FXML private Color clrSelDate = Color.web("#a5e6fb");
+
 	@FXML private ListView<String> listView;
 
-	private String[] months = { "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"};
-	private String[] days = {"SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
+	private String[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+	private String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 	private int[] currentDate = {0, 0, 0}; // (Month/Day/Year)
 	private int[] selectedDate = {0, 0, 0};
+	private int selDateRow = 0; // Row index of selected date
+	private int selDateDay = 0; // Day index of selected date
 
 	public static void main(String[] args) {
 		launch(args);
@@ -139,7 +149,7 @@ public class CalendarUI extends Application
 		stage.show();
 		setupCalendarBoxes();
 		setCurrDate();
-		changeMonth();
+		showChangedMonth();
 		initializeListeners();
 	}
 
@@ -234,13 +244,84 @@ public class CalendarUI extends Application
 
 	private void initializeListeners()
 	{
-		// TODO Add button functionality
+		btnMonthLeft.setOnMouseClicked(e ->
+		{
+			changeMonth(true, 1);
+		});
+		btnMonthRight.setOnMouseClicked(e ->
+		{
+			changeMonth(false, 1);
+		});
+		for(int rowCal = 0; rowCal < 6; rowCal++)
+		{
+			for(int dayCal = 0; dayCal < 7; dayCal++)
+			{
+				final int row = rowCal;
+				final int day = dayCal;
+				calendarDateBoxes[rowCal][dayCal].setOnMouseClicked(e ->
+				{
+					changeDate(row, day);
+				});
+				calendarDateLabels[rowCal][dayCal].setOnMouseClicked(e ->
+				{
+					changeDate(row, day);
+				});
+			}
+		}
+	}
+
+	private void changeMonth(boolean left, int day)
+	{
+		if(left)
+		{
+			selectedDate[0]--;
+			if(selectedDate[0] == 0)
+			{
+				selectedDate[0] = 12;
+				selectedDate[2]--;
+			}
+			selectedDate[1] = day;
+			showChangedMonth();
+		}
+		else
+		{
+			selectedDate[0]++;
+			if(selectedDate[0] == 13)
+			{
+				selectedDate[0] = 1;
+				selectedDate[2]++;
+			}
+			selectedDate[1] = day;
+			showChangedMonth();
+		}
+	}
+
+	private void changeDate(int row, int day)
+	{
+		selectedDate[1] = Integer.parseInt(calendarDateLabels[row][day].getText());
+		if(calendarDateBoxes[row][day].getFill().equals(clrDeactivated))
+		{
+			if(selectedDate[1] >= 21)
+				changeMonth(true, selectedDate[1]);
+			else
+				changeMonth(false, selectedDate[1]);
+		}
+		else
+		{ // TODO Make it so that if there are events on the day, make the day another color
+			if(Integer.parseInt(calendarDateLabels[selDateRow][selDateDay].getText()) == currentDate[1] && currentDate[0] == selectedDate[0] && currentDate[2] == selectedDate[2])
+				calendarDateBoxes[selDateRow][selDateDay].setFill(clrCurrDate);
+			else
+				calendarDateBoxes[selDateRow][selDateDay].setFill(clrActivated);
+			calendarDateBoxes[row][day].setFill(clrSelDate);
+			selDateRow = row;
+			selDateDay = day;
+			updateSelLabel(day);
+		}
 	}
 
 	private void setCurrDate()
 	{
 		String temp = LocalDateTime.now().toString();
-		System.out.println(temp);
 		currentDate[2] = Integer.parseInt(temp.substring(0, 4)); // Year
 		currentDate[1] = Integer.parseInt(temp.substring(8, 10)); // Day
 		currentDate[0] = Integer.parseInt(temp.substring(5, 7)); // Month
@@ -250,50 +331,72 @@ public class CalendarUI extends Application
 		}
 	}
 
-	private void changeMonth()
+	private void showChangedMonth()
 	{
-		int day = selectedDate[1];
-		int month = selectedDate[0] - 2;
-		if(month <= 0)
-			month += 12;
-		int year = selectedDate[2] % 100;
-		if(month >= 11)
-			year--;
-		int century = selectedDate[2] / 100;
-
-		int dayOfTheWeek = (day + (int) Math.floor((2.6 * month) - 0.2) + year + (year / 4) + (century / 4) - (2 * century)) % 7;
-		System.out.println(days[dayOfTheWeek]);
+		int dayOfTheWeek = getDayOfTheWeek(1, selectedDate[0], selectedDate[2]);
 
 		int[][] calendarDates = new int[6][7];
 		int prevMonthDays;
-		if(currentDate[0] == 1)
-			prevMonthDays = getAmtOfDays(12);
+		if(selectedDate[0] == 1)
+			prevMonthDays = getAmtOfDays(12, 0); // Second parameter doesn't matter because month is not February
 		else
-			prevMonthDays = getAmtOfDays(currentDate[0] - 1);
+			prevMonthDays = getAmtOfDays(selectedDate[0] - 1, selectedDate[2]);
+		if(dayOfTheWeek == 0)
+			dayOfTheWeek += 7;
 		for(int dayCal = 0; dayCal < 7; dayCal++) // Do first row
 		{
-			calendarDates[0][dayCal] = (prevMonthDays - dayOfTheWeek + dayCal) % prevMonthDays + 1;
+			if(dayOfTheWeek == 0)
+				calendarDates[0][dayCal] = (prevMonthDays - 7 + dayCal) % prevMonthDays + 1;
+			else
+				calendarDates[0][dayCal] = (prevMonthDays - dayOfTheWeek + dayCal) % prevMonthDays + 1;
 		}
 		int dayIndex = (prevMonthDays - dayOfTheWeek + 7) % prevMonthDays;
-		int currMonthDays = getAmtOfDays(currentDate[0]);
+		int currMonthDays = getAmtOfDays(selectedDate[0], selectedDate[2]);
 		for(int rowCal = 1; rowCal < 6; rowCal++)
 		{
 			for(int dayCal = 0; dayCal < 7; dayCal++)
 			{
-				calendarDates[rowCal][dayCal] = (dayIndex) % currMonthDays + 1;
+				calendarDates[rowCal][dayCal] = dayIndex % currMonthDays + 1;
 				dayIndex++;
 			}
 		}
 		populateCalendar(calendarDates);
 	}
 
-	private int getAmtOfDays(int m)
+	// Returns the selected date's day of the week
+	private int getDayOfTheWeek(int day, int monthParam, int yearParam)
+	{
+		int month = monthParam - 2;
+		if(month <= 0)
+			month += 12;
+		int year = yearParam % 100;
+		if(month >= 11)
+			year--;
+		int century = yearParam / 100;
+
+		int dayOfTheWeek = Math.abs((day + (int) Math.floor((2.6 * month) - 0.2) + year + (year / 4) + (century / 4) - (2 * century)) % 7);
+
+		return dayOfTheWeek;
+	}
+
+	private int getAmtOfDays(int m, int y)
 	{
 		if(m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10 || m == 12)
 			return 31;
 		else if(m == 2)
 		{
-			if(currentDate[2] % 4 == 0 && currentDate[2] % 100 == 0 && currentDate[2] % 400 == 0)
+			boolean isNine = false;
+			if(y % 4 == 0)
+			{
+				if(y % 100 == 0)
+				{
+					if(y % 400 == 0)
+						isNine = true;
+				}
+				else
+					isNine = true;
+			}
+			if(isNine)
 				return 29;
 			else
 				return 28;
@@ -305,12 +408,12 @@ public class CalendarUI extends Application
 	private void populateCalendar(int[][] calendarDates)
 	{
 		Platform.runLater(() -> {
-			String currMonthLabel = months[currentDate[0]-1];
+			String currMonthLabel = months[selectedDate[0]-1];
+			if(selectedDate[2] != currentDate[2])
+				currMonthLabel += " " + selectedDate[2];
 			lblCurrentMonth.setText(currMonthLabel);
 
-			String currDateLabel = months[currentDate[0]-1] + " " + currentDate[1] + ", " + currentDate[2];
-			lblCurrentDate.setText(currDateLabel);
-
+			int day = 0;
 			boolean hitFirst = false;
 			for(int rowCal = 0; rowCal < 6; rowCal++)
 			{
@@ -319,15 +422,32 @@ public class CalendarUI extends Application
 					if(calendarDates[rowCal][dayCal] == 1)
 						hitFirst = !hitFirst;
 					if(!hitFirst)
-						calendarDateBoxes[rowCal][dayCal].setFill(Color.web("#5a5a5a"));
-					else if(calendarDates[rowCal][dayCal] == currentDate[1])
-						calendarDateBoxes[rowCal][dayCal].setFill(Color.BLUE);
+						calendarDateBoxes[rowCal][dayCal].setFill(clrDeactivated); // Dark Gray - Deactivated
+					else if(calendarDates[rowCal][dayCal] == currentDate[1] && currentDate[0] == selectedDate[0] && currentDate[2] == selectedDate[2])
+						calendarDateBoxes[rowCal][dayCal].setFill(clrCurrDate); // Red - Current date
 					else
-						calendarDateBoxes[rowCal][dayCal].setFill(Color.web("#d9d9d9"));
-					System.out.println(calendarDates[rowCal][dayCal]);
+						calendarDateBoxes[rowCal][dayCal].setFill(clrActivated); // Light Gray - Activated
+					if(calendarDates[rowCal][dayCal] == selectedDate[1] && hitFirst)
+					{
+						calendarDateBoxes[rowCal][dayCal].setFill(clrSelDate); // Blue - Selected date
+						selDateRow = rowCal;
+						selDateDay = dayCal;
+						day = dayCal;
+					}
 					calendarDateLabels[rowCal][dayCal].setText("" + calendarDates[rowCal][dayCal]);
 				}
 			}
+
+			updateSelLabel(day);
+		});
+	}
+
+	private void updateSelLabel(int day)
+	{
+		Platform.runLater(() ->
+		{
+			String selDateLabel = days[day] + ", " + months[selectedDate[0]-1] + " " + selectedDate[1] + ", " + selectedDate[2];
+			lblSelectedDate.setText(selDateLabel);
 		});
 	}
 }

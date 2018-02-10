@@ -466,7 +466,7 @@
                            </children>
                         </GridPane>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d9d9d9" height="80.0" stroke="BLACK" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="3.0" width="400.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                        <Label fx:id="lblCurrentMonth" text="September 2018" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                        <Label fx:id="lblCurrentMonth" GridPane.columnIndex="1" GridPane.halignment="CENTER">
                            <font>
                               <Font size="38.0" />
                            </font>
@@ -481,8 +481,8 @@
                               <Image url="@Arrow.png" />
                            </image>
                         </ImageView>
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d9d9d9" height="80.0" stroke="BLACK" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="3.0" width="600.0" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
-                        <Label fx:id="lblCurrentDate" text="September 2018" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d9d9d9" height="86.0" stroke="BLACK" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="3.0" width="680.0" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                        <Label fx:id="lblSelectedDate" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                            <font>
                               <Font size="38.0" />
                            </font>
