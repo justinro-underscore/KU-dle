@@ -30,7 +30,7 @@ public class DairyFarmerClient {
     /**
      * Creates a hashmap of users
      *
-     * @throws IOException
+     * @throws IOException If an input or output exception occurred
      */
     public void initUsers() throws IOException {
         File userFile = new File("res/users.txt");
@@ -50,7 +50,7 @@ public class DairyFarmerClient {
     /**
      * Creates a hashmap of events
      *
-     * @throws IOException
+     * @throws IOException If an input or output exception occurred
      */
     public void initEvents() throws IOException {
         //TODO: maybe change path to a constant?
@@ -71,7 +71,7 @@ public class DairyFarmerClient {
     /**
      * Converts events to json and saves to file
      *
-     * @throws IOException
+     * @throws IOException If an input or output exception occurred
      */
     public void saveEvents() throws IOException {
         String eventJson = gson.toJson(events);
@@ -82,7 +82,7 @@ public class DairyFarmerClient {
     /**
      * Converts user data to json and save to file
      *
-     * @throws IOException
+     * @throws IOException If an input or output exception occurred
      */
     public void saveUsers() throws IOException {
         String userJson = gson.toJson(users);
@@ -95,7 +95,7 @@ public class DairyFarmerClient {
      *
      * @param json String representing json data
      * @param fileName String representing file name
-     * @throws IOException
+     * @throws IOException If an input or output exception occurred
      */
     public void createFile(String json, String fileName) throws IOException {
         writer = new FileWriter(fileName);
@@ -108,7 +108,7 @@ public class DairyFarmerClient {
      *
      * @param date LocalDate to access events from specific day
      * @return list of events for the provided date
-     * @throws IOException
+     * @throws IOException If an input or output exception occurred
      * @see LocalDate
      */
     public List<Event> getEvents(LocalDate date) throws IOException {
@@ -124,14 +124,12 @@ public class DairyFarmerClient {
      * @param creatorName String representing creator name
      * @param date LocalDate representing day of event
      * @param times List of times for event
-     * @throws IOException
+     * @throws IOException If an input or output exception occurred
      * @see LocalDate
      * @see Time
      * @see List
      */
     public void createEvent(String eventName, String creatorName, LocalDate date, List<Time> times) throws IOException {
-        //TODO: maybe have list of times with their own list of attendees (that way we know who is available at what time)?
-        //TODO: maybe add to list -> have list of events for each day and get specific by creator
         //TODO: only if date exists in hashmap add event -> else add date and list with event to hashmap
         Event event = new Event(eventName, creatorName, date, times);
 
@@ -150,7 +148,7 @@ public class DairyFarmerClient {
      *
      * @param date used to look up event list
      * @param eventName String to find specific event
-     * @throws IOException
+     * @throws IOException If an input or output exception occurred
      * @see LocalDate
      */
     public void deleteEvent(LocalDate date, String eventName) throws IOException {
@@ -189,20 +187,26 @@ public class DairyFarmerClient {
      * Deletes user with specified username
      *
      * @param username String representing username
+     * @return true if user was deleted else false
      */
-    public void deleteUser(String username)
+    public boolean deleteUser(String username)
     {
-        //TODO make sure this doesnt break
+        if (users.containsKey(username)) {
+            users.remove(username);
+            return true;
+        }
 
+        return false;
     }
 
     /**
-     * Returns a list of users
+     * Returns a hashmap of users
      *
      * @return users
-     * @see List
+     * @see HashMap
+     * @see User
      */
-    public List<User> getUsers() {
-        return null;
+    public HashMap<String, User> getUsers() {
+        return users;
     }
 }
