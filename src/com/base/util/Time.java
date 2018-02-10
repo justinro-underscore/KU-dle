@@ -12,7 +12,7 @@ public class Time {
     /**
      * Constructor, signifies which users are available for a specific
      * time.
-     * @param time
+     * @param time time for event
      * @param attendees is the list of user objects that can/will attend
      * the event at the time.
      */
@@ -48,7 +48,7 @@ public class Time {
 
     /**
      * Set the attendees with a new list of user objects
-     * @param attendees
+     * @param attendees list of attendees for time
      */
     public void setAttendees(List<User> attendees) {
         this.attendees = attendees;

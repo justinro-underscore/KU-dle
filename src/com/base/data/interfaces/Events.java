@@ -11,7 +11,8 @@ public class Events {
 
     /**
      * Creates a hashmap of event objects
-     * @return nothing
+     *
+     * @param events list of events for date
      */
     public Events(HashMap<LocalDate, List<Event>> events) {
         this.events = events;
@@ -27,7 +28,7 @@ public class Events {
 
     /**
      * Do I really need to explain a setter?
-     * @param events
+     * @param events list of events for date
      */
     public void setEvents(HashMap<LocalDate, List<Event>> events) {
         this.events = events;
