@@ -5,17 +5,22 @@ import com.base.util.Time;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Event
-{
+public class Event {
   private String eventName;
   private String creatorName;
   private LocalDate date;
   private List<Time> times;
 
-  /*
-  * @pre: String representing eventName, creator name, date, and a list of times
-  * @post: assign local variables to passed in values
-  * @return: none
+  /**
+   * Creates an event with the specified values
+   *
+   * @param eventName String representing event name
+   * @param creatorName String representing creator name
+   * @param date LocalDate representing event's date
+   * @param times List of times for event
+   * @see LocalDate
+   * @see Time
+   * @see List
    */
   public Event(String eventName, String creatorName, LocalDate date, List<Time> times) {
     this.eventName = eventName;
@@ -24,75 +29,81 @@ public class Event
     this.times = times;
   }
 
-  /*
-  * @pre: none
-  * @post: none
-  * @return: returns the events name
+  /**
+   * Returns the event's name
+   *
+   * @return the event name
    */
   public String getEventName()
   {
     return(eventName);
   }
 
-  /*
-  * @pre: A valid string
-  * @post: re-assgins the member variable eventName
-  * @return: none
+  /**
+   * Re-assigns the member variable eventName
+   *
+   * @param eventName String representing the event name
    */
   public void setEventName(String eventName)
   {
     eventName = eventName;
   }
 
-  /*
-  * @pre: none
-  * @post: none
-  * @return: returns the event creator name
+  /**
+   * Returns the event creator name
+   *
+   * @return the creator's name
    */
   public String getCreatorName() {
     return creatorName;
   }
 
-  /*
-  * @pre: A valid string
-  * @post: re-assgins the member variable creatorName
-  * @return: none
+  /**
+   * Re-assigns the member variable creatorName
+   *
+   * @param creatorName String representing event creator's name
    */
   public void setCreatorName(String creatorName) {
     this.creatorName = creatorName;
   }
 
-  /*
-  * @pre: none
-  * @post: none
-  * @return: returns the date of the event
+  /**
+   * Returns the date of the event
+   *
+   * @return event date
+   * @see LocalDate
    */
   public LocalDate getDate() {
     return date;
   }
 
-  /*
-  * @pre: A valid date
-  * @post: re-assgins the member variable date
-  * @return: none
+  /**
+   * Re-assigns the member variable date
+   *
+   * @param date A valid LocalDate for event
+   * @see LocalDate
    */
   public void setDate(LocalDate date) {
     this.date = date;
   }
 
-  /*
-  * @pre: none
-  * @post: none
-  * @return: returns the list of times for the event
+  /**
+   * Returns the list of times for the event
+   *
+   * @return list of Times
+   * @see Time
+   * @see List
    */
   public List<Time> getTimes() {
     return times;
   }
 
-  /*
-  * @pre: A valid list of times
-  * @post: re-assgins the member variable times
-  * @return: none
+  /**
+   * Re-assigns the member variable times
+   *
+   * @param times A valid list of times for an event
+   * @see Time
+   * @see List
    */
   public void setTimes(List<Time> times) {
     this.times = times;
