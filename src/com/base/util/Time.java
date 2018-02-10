@@ -14,42 +14,47 @@ public class Time {
     * @post: assign local variables to passed in values
     * @return: nothing
      */
+
+    /**
+     * Constructor, signifies which users are available for a specific
+     * time.
+     * @param time
+     * @param attendees is the list of user objects that can/will attend
+     * the event at the time.
+     */
     public Time(LocalTime time, List<User> attendees){
         this.time = time;
         this.attendees = attendees;
     }
 
-    /*
-    * @pre: nothing
-    * @post: nothing
-    * @return: time
+    /**
+     * GET THAT TIME
+     * @return the variable time that we declared in this file because its
+     * a getter, get it, we GET the variable WE declared
      */
     public LocalTime getTime() {
         return time;
     }
 
-    /*
-    * @pre: takes in a time
-    * @post: re-assigns the member variable time
-    * @return: nothing
+    /**
+     * SET THAT TIME
+     * @param time SET THAT TIME TO THIS VARIABLE
      */
     public void setTime(LocalTime time) {
         this.time = time;
     }
 
-    /*
-    * @pre: nothing
-    * @post: nothing
-    * @return: list of users
+    /**
+     * Get the list of user objects
+     * @return attendees, the list of user objects that I just talked about
      */
     public List<User> getAttendees() {
         return attendees;
     }
 
-    /*
-    * @pre: takes in a list of users
-    * @post: re-assigns the member variable attendees
-    * @return: nothing
+    /**
+     * Set the attendees with a new list of user objects
+     * @param attendees
      */
     public void setAttendees(List<User> attendees) {
         this.attendees = attendees;
