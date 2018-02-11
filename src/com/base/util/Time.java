@@ -56,4 +56,9 @@ public class Time {
     public void setAttendees(List<User> attendees) {
         this.attendees = attendees;
     }
+
+    @Override
+    public String toString() {
+        return time.toString();
+    }
 }

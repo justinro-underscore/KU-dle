@@ -1,7 +1,10 @@
 package com.base.main;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -46,6 +49,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 
 import com.base.data.DairyFarmerClient;
+import com.base.data.models.Event;
 import com.base.data.models.User;
 import com.base.main.CreateEventUI;
 import com.base.util.Utilities;
@@ -64,6 +68,8 @@ public class CalendarUI extends Application
 	private Image farmer = new Image("file:res/assets/farmer.png");
 	@FXML private ImageView btnMonthLeft;
 	@FXML private ImageView btnMonthRight;
+
+	@FXML private Label lblAdminDisable;
 	@FXML private Button btnCreateEvent;
 	@FXML private Button btnCreateUser;
 
@@ -162,22 +168,26 @@ public class CalendarUI extends Application
 	@FXML private Color clrActivated = Color.web("#d9d9d9");
 	@FXML private Color clrCurrDate = Color.web("#ffafaf");
 	@FXML private Color clrSelDate = Color.web("#a5e6fb");
+	@FXML private Color clrEvents = Color.web("#7efb91");
 
-	@FXML private ListView<String> listViewApproval; //Initialization of the ListView thats waiting for approval
-	@FXML private ListView<String> listViewAcceptedEvents; //Initialization of the ListView that is already accepted
+	@FXML private ListView<Event> lstViewAvailable; //Initialization of the ListView thats waiting for approval
+	@FXML private ListView<Event> lstViewAccepted; //Initialization of the ListView that is already accepted
 
 
 	// For displays
 	private String[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 	private String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
-	private int[] currentDate = {0, 0, 0}; // (Month/Day/Year)
-	private int[] selectedDate = {0, 0, 0};
+	LocalDate currentDateLD = LocalDate.of(0, 1, 1); // LocalDate version of current date (To be used in interfacing with the client)
+	LocalDate selectedDateLD = LocalDate.of(0, 1, 1); // LocalDate version of selected date
+	private int[] currentDateArr = {0, 0, 0}; // (Month/Day/Year)
+	private int[] selectedDateArr = {0, 0, 0};
 	private int selDateRow = 0; // Row index of selected date
 	private int selDateDay = 0; // Day index of selected date
 
 	private DairyFarmerClient client = new DairyFarmerClient();
 	private User user;
+
 	public String theinputUsername;
 	public String theinputPassword;
 	boolean loginDetails = false;
@@ -200,16 +210,16 @@ public class CalendarUI extends Application
 		load.setController(this); // Makes it so that you can control the UI using this class
 		client.initEvents(); // Loads events from a file
 		client.initUsers(); // Loads users from a file
-		
-		while(loginDetails==false)  //only reach the calendar UI if the username exists and the password is correct
+
+		while(!loginDetails)  //only reach the calendar UI if the username exists and the password is correct
 		{
 			showLoginPage();
-			
+
 			if(Utilities.userExists(client.getUsers(),theinputUsername)) //if the username exists
 			{
 				if(theinputPassword.equals(client.getUser(theinputUsername).getPassword()) ) //if the password is correct
 				{
-					loginDetails=true;
+					loginDetails = true;
 				}
 				else
 				{
@@ -219,8 +229,6 @@ public class CalendarUI extends Application
 					alert.setContentText("Please retry inputting your password");
 
 					alert.showAndWait();
-
-					
 				}
 			}
 			else
@@ -231,10 +239,18 @@ public class CalendarUI extends Application
 				alert.setContentText("Please retry inputting your credentials");
 
 				alert.showAndWait();
-
-				
 			}
+		}
 
+		user = client.getUser(theinputUsername);
+		if(user.getAdmin())
+		{
+			Platform.runLater(() ->
+			{
+				lblAdminDisable.setVisible(false);
+				btnCreateEvent.setDisable(false);
+				btnCreateUser.setDisable(false);
+			});
 		}
 
 		Parent root = (Parent) load.load();
@@ -250,17 +266,16 @@ public class CalendarUI extends Application
 		stage.setResizable(false);
 		stage.show();
 
-		
+
 
 		setupCalendarBoxes(); // Populates arrays
 		setCurrDate(); // Sets the current date
 		showChangedMonth(); // Updates the UI
 		initializeListeners(); // Initializes listeners...
-		initializelistViewApproval(); // Initializes to-be-approved list of events
-		initializelistViewAccepted(); // Initializes approved list of events
+		updateLists(); // Initializes the event lists
 		listViewApprovePushed();
 		listViewAcceptedPushed();
-		
+
 		// Happens when user tries to exit
 		stage.setOnCloseRequest(e ->
 		{
@@ -338,17 +353,13 @@ public class CalendarUI extends Application
 		    if(dialogButton == ButtonType.CANCEL)
 		    {
 		    	//Platform.exit();
-		    	System.exit(-1);
+		    	System.exit(0);
 		    }
 		    return null;
 		});
-		
+
 		Optional<Pair<String, String>> result = dialog.showAndWait();
 
-//		result.ifPresent(usernamePassword ->
-//		{
-//		    System.out.println("Username=" + username.getText() + ", Password=" + password.getText());
-//		});
 		theinputUsername= username.getText();
 		theinputPassword = password.getText();
 	}
@@ -359,13 +370,15 @@ public class CalendarUI extends Application
 	private void setCurrDate()
 	{
 		String temp = LocalDateTime.now().toString(); // Gets the current date
-		currentDate[2] = Integer.parseInt(temp.substring(0, 4)); // Year
-		currentDate[1] = Integer.parseInt(temp.substring(8, 10)); // Day
-		currentDate[0] = Integer.parseInt(temp.substring(5, 7)); // Month
+		currentDateArr[2] = Integer.parseInt(temp.substring(0, 4)); // Year
+		currentDateArr[1] = Integer.parseInt(temp.substring(8, 10)); // Day
+		currentDateArr[0] = Integer.parseInt(temp.substring(5, 7)); // Month
 		for(int i = 0; i < 3; i++)
 		{
-			selectedDate[i] = currentDate[i]; // Makes the selected date the current date at the initialization of the program
+			selectedDateArr[i] = currentDateArr[i]; // Makes the selected date the current date at the initialization of the program
 		}
+		currentDateLD = LocalDate.now();
+		selectedDateLD = LocalDate.now();
 	}
 
 	/**
@@ -461,30 +474,31 @@ public class CalendarUI extends Application
 	}
 
 	/**
-	 * Populates the ListView Approval items
+	 * Populates the ListViews
 	 */
-	private void initializelistViewApproval()
+	private void updateLists()
 	{
-		listViewApproval.getItems().add("Hacking Meeting - 2:00 PM");
-		listViewApproval.getItems().add("Pizza Night - 7:00 PM");
+		Platform.runLater(() ->
+		{
+			// Start by reseting the lists
+			lstViewAccepted.getItems().removeAll(lstViewAccepted.getItems());
+			lstViewAvailable.getItems().removeAll(lstViewAvailable.getItems());
 
-
-
-
-
-
-
-
+			// Fill the lists
+			List<Event> events = client.getEvents(selectedDateLD);
+			if(events != null)
+			{
+				for(Event e : events)
+				{
+					if(e.attendeeExists(user)) // If the user has already accepted
+						lstViewAccepted.getItems().add(e);
+					else // If the user has yet to accept
+						lstViewAvailable.getItems().add(e);
+				}
+			}
+		});
 	}
-	/**
-	 * Populates the ListView Accepted items
-	 */
-	private void initializelistViewAccepted()
-	{
-		listViewAcceptedEvents.getItems().add("Team Meeting Nerds");
-		listViewAcceptedEvents.getItems().add("Pizza Time");
 
-	}
 	/**
 	 * Opens the window for the user to accept or reject the event
 	 */
@@ -492,8 +506,8 @@ public class CalendarUI extends Application
 	{
 		//Obtained from : http://code.makery.ch/blog/javafx-dialogs-official/
 		Platform.runLater(() -> {
-			listViewApproval.setOnMouseClicked(e ->{
-				String textArea = listViewApproval.getSelectionModel().getSelectedItem();
+			lstViewAvailable.setOnMouseClicked(e ->{
+				Event textArea = lstViewAvailable.getSelectionModel().getSelectedItem();
 				//System.out.println(textArea);
 				Alert alert = new Alert(AlertType.CONFIRMATION);
 				alert.setTitle("Confirmation Event");
@@ -525,10 +539,9 @@ public class CalendarUI extends Application
 	private void listViewAcceptedPushed()
 	{
 		Platform.runLater(() -> {
-			listViewAcceptedEvents.setOnMouseClicked(e ->{
-			String textArea = listViewAcceptedEvents.getSelectionModel().getSelectedItem();
-			//System.out.println(textArea);
-			lblEventName.setText("Event Name: " + textArea);
+			lstViewAccepted.setOnMouseClicked(e ->{
+				String textArea = lstViewAccepted.getSelectionModel().getSelectedItem().toString();
+				lblEventName.setText("Event Name: " + textArea);
 			});
 		});
 	}
@@ -604,10 +617,6 @@ public class CalendarUI extends Application
 
 			Optional<Pair<String, String>> result = dialog.showAndWait();
 
-//			result.ifPresent(usernamePassword ->
-//			{
-//			    System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue() + " Admin? " + yesMode.isSelected()); // Tests the values inputted
-//			});
 			client.createUser(username.getText(), password.getText(), yesMode.isSelected());
 		});
 	}
@@ -674,7 +683,7 @@ public class CalendarUI extends Application
 	private void openCreateEvent() throws IOException, InterruptedException
 	{
 		paneMain.setDisable(true); // Disables the Calendar
-		CreateEventUI event = new CreateEventUI();
+		CreateEventUI event = new CreateEventUI(client, user, selectedDateLD);
 		// Obtained (in part) from https://stackoverflow.com/questions/24104313/how-to-delay-in-java
 		final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 	    executorService.scheduleAtFixedRate(new Runnable() {
@@ -683,8 +692,7 @@ public class CalendarUI extends Application
 	        {
 	            if(event.getEventFinished())
 	            {
-	            	// Add the event
-	            	// Update the calendar
+	            	updateLists();
 	            	paneMain.setDisable(false);
 	            	Thread.currentThread().stop();
 	            }
@@ -702,26 +710,29 @@ public class CalendarUI extends Application
 		// Go back a month
 		if(left)
 		{
-			selectedDate[0]--;
-			if(selectedDate[0] == 0) // Wrap around
+			selectedDateArr[0]--;
+			if(selectedDateArr[0] == 0) // Wrap around
 			{
-				selectedDate[0] = 12; // Go to December
-				selectedDate[2]--; // Go back a year
+				selectedDateArr[0] = 12; // Go to December
+				selectedDateArr[2]--; // Go back a year
 			}
-			selectedDate[1] = day;
+			selectedDateArr[1] = day;
+			selectedDateLD = LocalDate.of(selectedDateArr[2], selectedDateArr[0], selectedDateArr[1]); // Update selectedDateLD
 			showChangedMonth();
 		}
 		else // Go forward a month
 		{
-			selectedDate[0]++;
-			if(selectedDate[0] == 13) // Wrap around
+			selectedDateArr[0]++;
+			if(selectedDateArr[0] == 13) // Wrap around
 			{
-				selectedDate[0] = 1; // Go to January
-				selectedDate[2]++; // Go forward a year
+				selectedDateArr[0] = 1; // Go to January
+				selectedDateArr[2]++; // Go forward a year
 			}
-			selectedDate[1] = day;
+			selectedDateArr[1] = day;
+			selectedDateLD = LocalDate.of(selectedDateArr[2], selectedDateArr[0], selectedDateArr[1]); // Update selectedDateLD
 			showChangedMonth();
 		}
+		updateLists();
 	}
 
 	/**
@@ -731,27 +742,34 @@ public class CalendarUI extends Application
 	 */
 	private void changeDate(int row, int day)
 	{
-		selectedDate[1] = Integer.parseInt(calendarDateLabels[row][day].getText()); // Get selected day
+		selectedDateArr[1] = Integer.parseInt(calendarDateLabels[row][day].getText()); // Get selected day
 		if(calendarDateBoxes[row][day].getFill().equals(clrDeactivated)) // If the day is not in the current month...
 		{
 			// ... Change the month
-			if(selectedDate[1] >= 21) // If the user clicks on the previous month
-				changeMonth(true, selectedDate[1]);
+			if(selectedDateArr[1] >= 21) // If the user clicks on the previous month
+				changeMonth(true, selectedDateArr[1]);
 			else // If the user clicks on the next month
-				changeMonth(false, selectedDate[1]);
+				changeMonth(false, selectedDateArr[1]);
 		}
 		else // If the day is in the current month
-		{ // TODO Make it so that if there are events on the day, make the day another color
+		{
 			// If the old selected day was the current day
-			if(Integer.parseInt(calendarDateLabels[selDateRow][selDateDay].getText()) == currentDate[1] && currentDate[0] == selectedDate[0] && currentDate[2] == selectedDate[2])
+			if(Integer.parseInt(calendarDateLabels[selDateRow][selDateDay].getText()) == currentDateArr[1] && currentDateArr[0] == selectedDateArr[0] && currentDateArr[2] == selectedDateArr[2])
 				calendarDateBoxes[selDateRow][selDateDay].setFill(clrCurrDate);
 			else
-				calendarDateBoxes[selDateRow][selDateDay].setFill(clrActivated); // Otherwise just set it back to activated
+			{
+				if(client.getEvents(LocalDate.of(selectedDateArr[2], selectedDateArr[0], Integer.parseInt(calendarDateLabels[selDateRow][selDateDay].getText()))) == null)
+					calendarDateBoxes[selDateRow][selDateDay].setFill(clrActivated); // Light Gray - Activated
+				else
+					calendarDateBoxes[selDateRow][selDateDay].setFill(clrEvents); // Green - Events on this day
+			}
 			calendarDateBoxes[row][day].setFill(clrSelDate);
+			selectedDateLD = LocalDate.of(selectedDateArr[2], selectedDateArr[0], selectedDateArr[1]); // Update selectedDateLD
 			selDateRow = row;
 			selDateDay = day;
 			updateSelLabel();
 		}
+		updateLists();
 	}
 
 	/**
@@ -759,15 +777,14 @@ public class CalendarUI extends Application
 	 */
 	private void showChangedMonth()
 	{
-		int dayOfTheWeek = getDayOfTheWeek(1, selectedDate[0], selectedDate[2]); // Gets the day of the week of the first day of the month
-		//System.out.println(dayOfTheWeek);
+		int dayOfTheWeek = getDayOfTheWeek(1, selectedDateArr[0], selectedDateArr[2]); // Gets the day of the week of the first day of the month
 
 		int[][] calendarDates = new int[6][7]; // The dates to be written to the program
 		int prevMonthDays; // Get the amount of days in the previous month
-		if(selectedDate[0] == 1) // Wrap
+		if(selectedDateArr[0] == 1) // Wrap
 			prevMonthDays = getAmtOfDays(12, 0); // Second parameter doesn't matter because month is not February
 		else
-			prevMonthDays = getAmtOfDays(selectedDate[0] - 1, selectedDate[2]);
+			prevMonthDays = getAmtOfDays(selectedDateArr[0] - 1, selectedDateArr[2]);
 		if(dayOfTheWeek == 0) // This is so if the first day of the month is on a Sunday, start the month on the second line
 			dayOfTheWeek += 7;
 		for(int dayCal = 0; dayCal < 7; dayCal++) // Populate first row with the last of last month's dates
@@ -775,7 +792,7 @@ public class CalendarUI extends Application
 			calendarDates[0][dayCal] = (prevMonthDays - dayOfTheWeek + dayCal) % prevMonthDays + 1;
 		}
 		int dayIndex = (prevMonthDays - dayOfTheWeek + 7) % prevMonthDays; // The index of the current date
-		int currMonthDays = getAmtOfDays(selectedDate[0], selectedDate[2]); // Get the amount of days in the current month
+		int currMonthDays = getAmtOfDays(selectedDateArr[0], selectedDateArr[2]); // Get the amount of days in the current month
 		// Go through all of the calendar cells
 		for(int rowCal = 1; rowCal < 6; rowCal++)
 		{
@@ -852,9 +869,9 @@ public class CalendarUI extends Application
 	{
 		Platform.runLater(() -> { // In order to change the labels, you must use Platform.runLater
 			// Show the current month shown (at the top of the pane)
-			String currMonthLabel = months[selectedDate[0]-1];
-			if(selectedDate[2] != currentDate[2]) // If the selected year is not the current year
-				currMonthLabel += " " + selectedDate[2];
+			String currMonthLabel = months[selectedDateArr[0]-1];
+			if(selectedDateArr[2] != currentDateArr[2]) // If the selected year is not the current year
+				currMonthLabel += " " + selectedDateArr[2];
 			lblCurrentMonth.setText(currMonthLabel);
 
 			// Fill the calendar with labels
@@ -867,11 +884,16 @@ public class CalendarUI extends Application
 						hitFirst = !hitFirst;
 					if(!hitFirst) // If the month is not selected
 						calendarDateBoxes[rowCal][dayCal].setFill(clrDeactivated); // Dark Gray - Deactivated
-					else if(calendarDates[rowCal][dayCal] == currentDate[1] && currentDate[0] == selectedDate[0] && currentDate[2] == selectedDate[2]) // If the date is the current date
+					else if(calendarDates[rowCal][dayCal] == currentDateArr[1] && currentDateArr[0] == selectedDateArr[0] && currentDateArr[2] == selectedDateArr[2]) // If the date is the current date
 						calendarDateBoxes[rowCal][dayCal].setFill(clrCurrDate); // Red - Current date
 					else // If the date is in the current month
-						calendarDateBoxes[rowCal][dayCal].setFill(clrActivated); // Light Gray - Activated
-					if(calendarDates[rowCal][dayCal] == selectedDate[1] && hitFirst) // If the cell is the selected date
+					{
+						if(client.getEvents(LocalDate.of(selectedDateArr[2], selectedDateArr[0], calendarDates[rowCal][dayCal])) == null)
+							calendarDateBoxes[rowCal][dayCal].setFill(clrActivated); // Light Gray - Activated
+						else
+							calendarDateBoxes[rowCal][dayCal].setFill(clrEvents); // Green - Events on this day
+					}
+					if(calendarDates[rowCal][dayCal] == selectedDateArr[1] && hitFirst) // If the cell is the selected date
 					{
 						calendarDateBoxes[rowCal][dayCal].setFill(clrSelDate); // Blue - Selected date
 						selDateRow = rowCal;
@@ -892,7 +914,7 @@ public class CalendarUI extends Application
 	{
 		Platform.runLater(() ->
 		{
-			String selDateLabel = days[selDateDay] + ", " + months[selectedDate[0]-1] + " " + selectedDate[1] + ", " + selectedDate[2];
+			String selDateLabel = days[selDateDay] + ", " + months[selectedDateArr[0]-1] + " " + selectedDateArr[1] + ", " + selectedDateArr[2];
 			lblSelectedDate.setText(selDateLabel);
 			lblSelectedDate2.setText("Selected Date\n" +  selDateLabel);
 

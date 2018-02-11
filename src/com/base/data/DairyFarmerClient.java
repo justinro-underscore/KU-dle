@@ -139,8 +139,8 @@ public class DairyFarmerClient {
      * @see Time
      * @see List
      */
-    public boolean createEvent(String eventName, String creatorName, LocalDate date, List<Time> times) {
-        Event event = new Event(eventName, creatorName, date, times);
+    public boolean createEvent(String eventName, String description, String creatorName, LocalDate date, List<Time> times, List<User> attendees) {
+        Event event = new Event(eventName, description, creatorName, date, times, attendees);
 
         if (events.containsKey(date)) {
             events.get(date).add(event);

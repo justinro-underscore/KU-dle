@@ -1,10 +1,16 @@
 package com.base.main;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
-import javafx.application.Application;
-import javafx.application.Platform;
+import com.base.data.DairyFarmerClient;
+import com.base.data.models.Event;
+import com.base.data.models.User;
+import com.base.util.Time;
+
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +22,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -29,12 +34,16 @@ public class CreateEventUI
 	@FXML private TextArea txtEventDesc;
 	@FXML private Label lblEventDesc;
 
-	@FXML private ListView<String> lstPossibleTimes;
-	@FXML private ListView<String> lstChosenTimes;
+	@FXML private ListView<Time> lstPossibleTimes;
+	@FXML private ListView<Time> lstChosenTimes;
 
 	@FXML private Button btnAddTime;
 	@FXML private Button btnDelTime;
 	@FXML private Button btnCreate;
+
+	private DairyFarmerClient client;
+	private User admin;
+	private LocalDate currDate;
 
 	private boolean eventCreated = false; // Will tell whether or not the event is created
 
@@ -42,7 +51,7 @@ public class CreateEventUI
 	 * Where the application launches from
 	 * @throws IOException
 	 */
-	public CreateEventUI() throws IOException
+	public CreateEventUI(DairyFarmerClient clientParam, User adminParam, LocalDate currDateParam) throws IOException
 	{
 		FXMLLoader load = new FXMLLoader(getClass().getResource("/CreateEvent.fxml")); // You may have to change the path in order to access CalendarUI.fxml TODO make sure this works
 		load.setController(this); // Makes it so that you can control the UI using this class
@@ -55,6 +64,9 @@ public class CreateEventUI
 		lstPossibleTimes.getItems().addAll(getPossibleTimes());
 
 		// Start the application
+		client = clientParam;
+		admin = adminParam;
+		currDate = currDateParam;
 		Stage stage = new Stage();
 		stage.setTitle("Create Event");
 		stage.setScene(scene);
@@ -74,35 +86,38 @@ public class CreateEventUI
 	{
 		btnAddTime.setOnAction(e ->
 		{
-			ObservableList<String> temp = lstPossibleTimes.getSelectionModel().getSelectedItems();
-			String[] selectedTimes = temp.toArray(new String[0]);
+			ObservableList<Time> temp = lstPossibleTimes.getSelectionModel().getSelectedItems();
+			Time[] selectedTimes = temp.toArray(new Time[0]);
 
-            for(String time : selectedTimes)
+            for(Time time : selectedTimes)
             {
             	lstChosenTimes.getItems().add(time);
             	lstPossibleTimes.getItems().remove(time);
             }
-        	lstChosenTimes.getItems().sort((String s1, String s2) -> s1.compareTo(s2));
+        	lstChosenTimes.getItems().sort((Time t1, Time t2) -> t1.getTime().compareTo(t2.getTime()));
 		});
 
 		btnDelTime.setOnAction(e ->
 		{
-			ObservableList<String> temp = lstChosenTimes.getSelectionModel().getSelectedItems();
-			String[] selectedTimes = temp.toArray(new String[0]);
+			ObservableList<Time> temp = lstChosenTimes.getSelectionModel().getSelectedItems();
+			Time[] selectedTimes = temp.toArray(new Time[0]);
 
-            for(String time : selectedTimes)
+            for(Time time : selectedTimes)
             {
             	lstPossibleTimes.getItems().add(time);
             	lstChosenTimes.getItems().remove(time);
             }
-        	lstPossibleTimes.getItems().sort((String s1, String s2) -> s1.compareTo(s2));
+        	lstPossibleTimes.getItems().sort((Time t1, Time t2) -> t1.getTime().compareTo(t2.getTime()));
 		});
 
 		btnCreate.setOnAction(e ->
 		{
 			if(checkInputs())
 			{
-				// TODO Create event
+				List<Time> tempTime = lstChosenTimes.getItems();
+				List<User> tempUser = new ArrayList<User>();
+				tempUser.add(admin);
+				client.createEvent(txtEventName.getText(), txtEventDesc.getText(), admin.getName(), currDate, tempTime, tempUser);
 				showDialogBox("Event Created", "Event Created!", "Event \"" + txtEventName.getText() + "\" was successfully created!", AlertType.INFORMATION);
 				eventCreated = true;
 				stage.close();
@@ -130,7 +145,19 @@ public class CreateEventUI
 			lstPossibleTimes.requestFocus();
 			return false;
 		}
-		// TODO check for repeat names
+		List<Event> temp = client.getEvents(currDate);
+		if(temp != null)
+		{
+			for(Event e : temp)
+			{
+				if(txtEventName.getText() == e.getEventName())
+				{
+					showDialogBox("Repeat Event Name", "Event Name Already Exists!", "Please change the event name", AlertType.ERROR);
+					txtEventName.requestFocus();
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 
@@ -152,23 +179,23 @@ public class CreateEventUI
 		alert.showAndWait();
 	}
 
-	private ArrayList<String> getPossibleTimes()
+	private ArrayList<Time> getPossibleTimes()
 	{
-		ArrayList<String> times = new ArrayList<String>();
-		times.add("5:00");
-		times.add("5:20");
-		times.add("5:40");
-		times.add("6:00");
-		times.add("6:20");
-		times.add("6:40");
-		times.add("7:00");
-		times.add("7:20");
-		times.add("7:40");
-//        "8:00", "8:20", "8:40", "9:00", "9:20", "9:40", "10:00", "10:20", "10:40",
-//        "11:00", "11:20", "11:40", "13:00", "13:20", "13:40", "14:00", "14:20", "14:40",
-//        "15:00", "15:20", "15:40", "16:00", "16:20", "16:40", "17:00", "17:20", "17:40",
-//        "18:00", "18:20", "18:40", "19:00", "19:20", "19:40", "20:00", "20:20", "20:40",
-//        "21:00", "21:20", "21:40", "22:00", "22:20", "22:40", "23:00", "23:20", "23:40"
+		ArrayList<Time> times = new ArrayList<Time>();
+		Time temp;
+		ArrayList<User> creator = new ArrayList<User>();
+		creator.add(admin);
+		for(int hour = 5; hour < 24; hour++)
+		{
+			if(hour != 12)
+			{
+				for(int min = 0; min < 60; min += 20)
+				{
+					temp = new Time(LocalTime.of(hour, min), creator);
+					times.add(temp);
+				}
+			}
+		}
 		return times;
 	}
 

@@ -84,4 +84,9 @@ public class User {
     {
         this.isAdmin = isAdmin;
     }
+
+    public boolean equals(User rhs)
+    {
+    	return(name.equals(rhs.name));
+    }
 }
