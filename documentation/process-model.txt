@@ -1,0 +1,47 @@
+The Scrum software development process would be ideal for this project.  We did
+not think that any of the prescriptive models would have worked well for the
+following reasons:
+
+1.	We did not have an abundance of time to plan before we needed to start coding
+2.	Implementing quickly was necessary to have time for unit testing
+3.	Excessive organization and order was not necessary since we did most of our
+coding while sitting next to each other, and we could just talk to each other
+about discrepancies directly
+4.	Focusing on the process, rather than our own abilities to code, would have
+too restricting; focusing on how to meet requirements, rather than actually
+working towards those requirements, would have wasted precious time
+
+
+Agile development fit this project nicely for the following reasons:
+
+1.	It focuses on our own individual strengths and coding styles, rather
+than forcing us into a programming mold
+2.	We needed to implement fast, so “working software over large documentation”
+(Software Processes, Alex Bardas, slide 21) was a good strategy
+a.	We still had plenty of documentation, it just was not our focus
+
+
+Scrum specifically worked for this project for the following reasons:
+
+1.	“Testing and documentation are on-going as the product is constructed”
+(Agile Development, Alex Bardas, slide 15) is good for a project that needs
+to be completed quickly and for a group that does not want to get bogged down
+by process restrictions
+2.	Short meetings, and then jumping back into development, are good when the
+project is well defined, which project 1 is, because we do not have to iron
+out very many details
+
+
+Our group, somewhat subconsciously, used Scrum when we developed our project.
+We developed different features in short bursts, similar to sprints. Every day
+we met, we had very short meetings to explain where different team members were
+in the development process.   We tested features as we implemented them, such as
+checking if the calendar showed the correct month, or making sure we successfully
+added a user.  This process worked well for us because it put coding first, and it
+allowed us to have the necessary freedom to work efficiently.  We allowed ourselves
+to use different IDEs (Eclipse for frontend and Intellij for backend) and adhere to
+different coding styles so that we could implement quickly and meet the deadline.
+Not being restricted by guidelines and rules helped us develop quicker, and the lack
+of frustration that comes with freedom probably made our project better.  We will
+likely come back to this process model in the future.
+
