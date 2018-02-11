@@ -7,6 +7,9 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Custom utilities class: contains methods to validate client data
+ */
 public class Utilities {
     /**
      * Method to validate times

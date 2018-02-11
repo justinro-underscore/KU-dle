@@ -5,6 +5,9 @@ import com.base.data.models.User;
 import java.time.LocalTime;
 import java.util.List;
 
+/**
+ * Custom time object: contains a LocalTime and list of attendees
+ */
 public class Time {
     private LocalTime time;
     private List<User> attendees;

@@ -6,6 +6,9 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Interface for gson to convert json of events to a HashMap of events with date as key
+ */
 public class Events {
     private HashMap<LocalDate, List<Event>> events;
 

@@ -1,5 +1,8 @@
 package com.base.data.models;
 
+/**
+ * User object: contains username, user password, admin status
+ */
 public class User {
     private String name;
     private String password;

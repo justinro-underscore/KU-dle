@@ -5,6 +5,9 @@ import com.base.util.Time;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Event object: contains event name, creator name, date, and list of times
+ */
 public class Event {
     private String eventName;
     private String creatorName;
@@ -107,19 +110,5 @@ public class Event {
      */
     public void setTimes(List<Time> times) {
         this.times = times;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(eventName + ", " + creatorName + ", " + date.toString() + ", ");
-        for (Time time : times) {
-            builder.append("Time: " + time.getTime() + ", ");
-            for (User user : time.getAttendees()) {
-                builder.append(" Name: " + user.getName() + ", ");
-            }
-        }
-
-        return builder.toString();
     }
 }

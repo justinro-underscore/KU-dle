@@ -12,6 +12,9 @@ import java.io.*;
 import java.time.*;
 import java.util.*;
 
+/**
+ * Interface for UI to do data manipulation and file IO
+ */
 public class DairyFarmerClient {
     private Gson gson;
     private FileWriter writer;
