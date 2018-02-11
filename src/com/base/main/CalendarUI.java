@@ -45,6 +45,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 
+import com.base.data.DairyFarmerClient;
 import com.base.main.CreateEventUI;
 
 
@@ -173,6 +174,8 @@ public class CalendarUI extends Application
 	private int selDateRow = 0; // Row index of selected date
 	private int selDateDay = 0; // Day index of selected date
 
+	private DairyFarmerClient client = new DairyFarmerClient();
+
 	/**
 	 * Where the application launches from
 	 * @param args What is passed in (don't worry about this)
@@ -187,7 +190,6 @@ public class CalendarUI extends Application
 	 */
 	public void start(Stage stage) throws Exception
 	{
-
 		FXMLLoader load = new FXMLLoader(getClass().getResource("/CalendarUI.fxml")); // You may have to change the path in order to access CalendarUI.fxml TODO make sure this works
 		load.setController(this); // Makes it so that you can control the UI using this class
 
@@ -205,6 +207,10 @@ public class CalendarUI extends Application
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.show();
+
+		client.initEvents(); // Loads events from a file
+		client.initUsers(); // Loads users from a file
+
 		setupCalendarBoxes(); // Populates arrays
 		setCurrDate(); // Sets the current date
 		showChangedMonth(); // Updates the UI
@@ -213,6 +219,19 @@ public class CalendarUI extends Application
 		initializelistViewAccepted(); // Initializes approved list of events
 		listViewApprovePushed();
 		listViewAcceptedPushed();
+
+		// Happens when user tries to exit
+		stage.setOnCloseRequest(e ->
+		{
+			try {
+				client.saveEvents(); // Save to file
+				client.saveUsers(); // Save to file
+			}
+			catch (IOException e1)
+			{
+				e1.printStackTrace();
+			}
+		});
 	}
 
 	/**
