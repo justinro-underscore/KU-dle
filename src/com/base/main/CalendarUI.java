@@ -17,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
 
 import javafx.scene.control.Label;
@@ -44,11 +45,12 @@ public class CalendarUI extends Application
 {
 	@FXML private Label lblCurrentMonth; // Shows what month is currently showing
 	@FXML private Label lblSelectedDate; // Shows what day is currently selected
+	@FXML private Label lblSelectedDate2;
 	private Image arrow = new Image(getClass().getResourceAsStream("Arrow.png"));
 	@FXML private ImageView btnMonthLeft;
 	@FXML private ImageView btnMonthRight;
 	@FXML private Button btnCreateEvent;
-
+	@FXML private Button btnCreateUser;
 
 	// Calendar boxes
 	private Label[][] calendarDateLabels = new Label[6][7];
@@ -187,7 +189,7 @@ public class CalendarUI extends Application
 		dialog.setHeaderText("Calendar Login"); //Naming Scheme
 
 		// Set the icon (must be included in the project).
-		dialog.setGraphic(new ImageView(this.getClass().getResource("cow.png").toString())); //THE LORD AND SAVIOR OUR COW!
+		dialog.setGraphic(new ImageView(this.getClass().getResource("cow.gif").toString())); //THE LORD AND SAVIOR OUR COW!
 
 		// Set the button types.
 		ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE); //Options for Buttons
@@ -443,16 +445,101 @@ public class CalendarUI extends Application
 			lblEventName.setText("Event Name: " + textArea);
 			});
 		});	
-	}
+	}	
 	private void createEvent()
 	{
 		
+	}
+	
+	private void createUser()
+	{
+		Platform.runLater(() -> {
+			FXMLLoader load = new FXMLLoader(getClass().getResource("/CalendarUI.fxml")); // You may have to change the path in order to access CalendarUI.fxml TODO make sure this works
+			load.setController(this); // Makes it so that you can control the UI using this class
+			
+			
+			//Obtained from : http://code.makery.ch/blog/javafx-dialogs-official/
+			// Create the custom dialog.
+			
+			
+			Dialog<Pair<String, String>> dialog = new Dialog<>(); //Creates the dialog for the login portal
+			dialog.setTitle("User Creation Portal"); //Naming Scheme
+			dialog.setHeaderText("Create a User"); //Naming Scheme
+
+			// Set the icon (must be included in the project).
+			//picture from http://pixelpeople.wikia.com/wiki/Farmer
+			dialog.setGraphic(new ImageView(this.getClass().getResource("farmer.png").toString())); //THE LORD AND SAVIOR OUR COW!
+
+			// Set the button types.
+			ButtonType loginButtonType = new ButtonType("Create User", ButtonData.OK_DONE); //Options for Buttons
+			dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL); // Cancel Button
+
+			// Create the username and password labels and fields.
+			GridPane grid = new GridPane();
+			grid.setHgap(10);
+			grid.setVgap(10);
+			grid.setPadding(new Insets(20, 150, 10, 10));
+
+			
+			//Username Field for the Fields
+			TextField username = new TextField();
+			username.setPromptText("Username");
+			PasswordField password = new PasswordField();
+			password.setPromptText("Password");
+			CheckBox yesMode = new CheckBox("Yes");
+		
+			
+
+			
+
+			grid.add(new Label("Unique User Username:"), 0, 0);
+			grid.add(username, 1, 0);
+			grid.add(new Label("User "
+					+ "Password:"), 0, 1);
+			grid.add(password, 1, 1);
+			grid.add(new Label("Admin?"), 0, 2);
+			grid.add(yesMode, 1, 2);
+			
+
+
+			// Enable/Disable login button depending on whether a username was entered.
+			Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+			loginButton.setDisable(true);
+
+			// Do some validation (using the Java 8 lambda syntax).
+			username.textProperty().addListener((observable, oldValue, newValue) -> {
+			loginButton.setDisable(newValue.trim().isEmpty());
+			});
+
+			dialog.getDialogPane().setContent(grid);
+
+			// Request focus on the username field by default.
+			Platform.runLater(() -> username.requestFocus());
+
+			// Convert the result to a username-password-pair when the login button is clicked.
+			dialog.setResultConverter(dialogButton -> {
+			    if (dialogButton == loginButtonType) {
+			        return new Pair<>(username.getText(), password.getText());
+			    }
+			    return null;
+			});
+
+			Optional<Pair<String, String>> result = dialog.showAndWait();
+
+			result.ifPresent(usernamePassword -> {
+			    System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue() + " Admin? " + yesMode.isSelected()); // Tests the values inputted
+			});
+		});
 	}
 	private void initializeListeners()
 	{
 		btnCreateEvent.setOnAction(e ->
 		{
 			createEvent();
+		});
+		btnCreateUser.setOnAction(e ->
+		{
+			createUser();
 		});
 		btnMonthLeft.setOnMouseClicked(e ->
 		{
@@ -687,6 +774,8 @@ public class CalendarUI extends Application
 		{
 			String selDateLabel = days[selDateDay] + ", " + months[selectedDate[0]-1] + " " + selectedDate[1] + ", " + selectedDate[2];
 			lblSelectedDate.setText(selDateLabel);
+			lblSelectedDate2.setText("Selected Date\n" +  selDateLabel);
+
 		});
 	}
 }
