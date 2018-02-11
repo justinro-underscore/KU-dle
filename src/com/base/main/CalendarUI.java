@@ -1,7 +1,5 @@
 package com.base.main;
 
-
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -58,7 +56,9 @@ public class CalendarUI extends Application
 	@FXML private Label lblCurrentMonth; // Shows what month is currently showing
 	@FXML private Label lblSelectedDate; // Shows what day is currently selected
 	@FXML private Label lblSelectedDate2;
-	private Image arrow = new Image(getClass().getResourceAsStream("Arrow.png"));
+	private Image arrow = new Image("file:res/assets/arrow.png");
+	private Image cowGif = new Image("file:res/assets/cow.gif");
+	private Image farmer = new Image("file:res/assets/farmer.png");
 	@FXML private ImageView btnMonthLeft;
 	@FXML private ImageView btnMonthRight;
 	@FXML private Button btnCreateEvent;
@@ -109,8 +109,6 @@ public class CalendarUI extends Application
 	@FXML private Label lblDay01;
 	@FXML private Label lblDay00;
 	@FXML private Label lblEventName;
-
-
 
 	private Rectangle[][] calendarDateBoxes = new Rectangle[6][7];
 	@FXML private Rectangle boxDay56;
@@ -229,7 +227,9 @@ public class CalendarUI extends Application
 		dialog.setHeaderText("Calendar Login"); //Naming Scheme
 
 		// Set the icon (must be included in the project).
-		dialog.setGraphic(new ImageView(this.getClass().getResource("cow.gif").toString())); //THE LORD AND SAVIOR OUR COW!
+		ImageView ivCow = new ImageView();
+		ivCow.setImage(cowGif);
+		dialog.setGraphic(ivCow); //THE LORD AND SAVIOR OUR COW!
 
 		// Set the button types.
 		ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE); //Options for Buttons
@@ -482,7 +482,9 @@ public class CalendarUI extends Application
 
 			// Set the icon (must be included in the project).
 			//picture from http://pixelpeople.wikia.com/wiki/Farmer
-			dialog.setGraphic(new ImageView(this.getClass().getResource("Farmer.png").toString())); //THE LORD AND SAVIOR OUR COW!
+			ImageView ivFarmer = new ImageView();
+			ivFarmer.setImage(farmer);
+			dialog.setGraphic(ivFarmer); //THE LORD AND SAVIOR OUR COW!
 
 			// Set the button types.
 			ButtonType loginButtonType = new ButtonType("Create User", ButtonData.OK_DONE); //Options for Buttons
