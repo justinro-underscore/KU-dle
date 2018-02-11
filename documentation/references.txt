@@ -29,3 +29,6 @@ References:
     - http://pixelpeople.wikia.com/wiki/Farmer
  * Cow
     - https://www.pinterest.com/pin/367465650829837382/
+
+ : gitignore
+    - https://www.gitignore.io/api/java,linux,eclipse,windows,intellij
