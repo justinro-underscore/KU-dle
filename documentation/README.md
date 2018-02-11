@@ -24,3 +24,9 @@ Now that you have successfully navigated to a day and event that you want to vot
 >If there are no events on the left side of the screen see [The Calendar](#TheCalendar) on how to navigate the gui.
 
 After selecting the event you will be prompted will a list of times that the event is being held over. Simply check the times that you are available and click the "Accept Event" box and you're done. You can then either view other events to and vote on those or just log out.
+## Functionality for Admin Users
+Admin Users can do anything that a normal user can do plus Creating a new User, Deleting an existing user, Creating a new event, Creating a new Event, and Deleting an existing Event.
+### <a name="CreatingUser"><a/>Creating Users
+To create a new user click the "Create User" button on the bottom left of the screen. A Screen will pop up with fields for a user name and a password. There is also a check box to select if the new user should be granted admin privileges or not. Usernames are unique, so if the username you selected is already taken it will not allow you add it and you'll have to pick another name.
+### Deleting Users
+To delete a user click the "Delete User" button. It will prompt you with a box to enter the username of the User you are trying to delete. If the user exists it will tell you that the user was successfully deleted. Otherwise it will tell you nothing happened.
