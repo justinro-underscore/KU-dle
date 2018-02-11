@@ -148,8 +148,8 @@ public class CalendarUI extends Application
 	@FXML private Color clrCurrDate = Color.web("#ffafaf");
 	@FXML private Color clrSelDate = Color.web("#a5e6fb");
 
-	@FXML private ListView<String> listViewApproval;
-	@FXML private ListView<String> listViewAccept;
+	@FXML private ListView<String> listViewApproval; //Initialization of the ListView thats waiting for approval
+	@FXML private ListView<String> listViewAcceptedEvents; //Initialization of the ListView that is already accepted
 
 
 	// For displays
@@ -178,33 +178,20 @@ public class CalendarUI extends Application
 
 		FXMLLoader load = new FXMLLoader(getClass().getResource("/CalendarUI.fxml")); // You may have to change the path in order to access CalendarUI.fxml TODO make sure this works
 		load.setController(this); // Makes it so that you can control the UI using this class
-
-//		TextInputDialog username = new TextInputDialog("Username");
-//		username.setTitle("Login Portal");
-//		username.setHeaderText("Calendar Login");
-//		username.setContentText("Username: ");
-//		Optional<String> theUsername = username.showAndWait();
-//		System.out.println(theUsername);
-//		TextInputDialog password= new TextInputDialog("Password");
-//		password.setTitle("Login Portal");
-//		password.setHeaderText("Calendar Login");
-//		password.setContentText("Password: ");
-//		Optional<String> thePassword = password.showAndWait();
-//		System.out.println(thePassword);
 		
 		
-		//http://code.makery.ch/blog/javafx-dialogs-official/
+		//Obtained from : http://code.makery.ch/blog/javafx-dialogs-official/
 		// Create the custom dialog.
-		Dialog<Pair<String, String>> dialog = new Dialog<>();
-		dialog.setTitle("Login Portal");
-		dialog.setHeaderText("Calendar Login");
+		Dialog<Pair<String, String>> dialog = new Dialog<>(); //Creates the dialog for the login portal
+		dialog.setTitle("Login Portal"); //Naming Scheme
+		dialog.setHeaderText("Calendar Login"); //Naming Scheme
 
 		// Set the icon (must be included in the project).
-		dialog.setGraphic(new ImageView(this.getClass().getResource("cow.png").toString()));
+		dialog.setGraphic(new ImageView(this.getClass().getResource("cow.png").toString())); //THE LORD AND SAVIOR OUR COW!
 
 		// Set the button types.
-		ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE);
-		dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+		ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE); //Options for Buttons
+		dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL); // Cancel Button
 
 		// Create the username and password labels and fields.
 		GridPane grid = new GridPane();
@@ -212,6 +199,8 @@ public class CalendarUI extends Application
 		grid.setVgap(10);
 		grid.setPadding(new Insets(20, 150, 10, 10));
 
+		
+		//Username Field for the Fields
 		TextField username = new TextField();
 		username.setPromptText("Username");
 		PasswordField password = new PasswordField();
@@ -228,7 +217,7 @@ public class CalendarUI extends Application
 
 		// Do some validation (using the Java 8 lambda syntax).
 		username.textProperty().addListener((observable, oldValue, newValue) -> {
-		    loginButton.setDisable(newValue.trim().isEmpty());
+		loginButton.setDisable(newValue.trim().isEmpty());
 		});
 
 		dialog.getDialogPane().setContent(grid);
@@ -247,7 +236,7 @@ public class CalendarUI extends Application
 		Optional<Pair<String, String>> result = dialog.showAndWait();
 
 		result.ifPresent(usernamePassword -> {
-		    System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue());
+		    System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue()); // Tests the values inputted
 		});
 		
 		
@@ -256,21 +245,22 @@ public class CalendarUI extends Application
 		Parent root = (Parent) load.load();
 		Scene scene = new Scene(root);
 
-		btnMonthLeft.setImage(arrow);
+		//Arrow Pictures
+		btnMonthLeft.setImage(arrow); 
 		btnMonthRight.setImage(arrow);
 
 		// Start the application
 		stage.setTitle("Calendar");
 		stage.setScene(scene);
 		stage.show();
-		setupCalendarBoxes();
+		setupCalendarBoxes(); 
 		setCurrDate();
 		showChangedMonth();
 		initializeListeners();
 		initializelistViewApproval();
 		initializelistViewAccepted();
-		
-		listViewPushed();
+		listViewApprovePushed();
+		listViewAcceptedPushed();
 //		createEvent();
 	}
 
@@ -380,29 +370,77 @@ public class CalendarUI extends Application
 		calendarDateBoxes[5][5] = boxDay55;
 		calendarDateBoxes[5][6] = boxDay56;
 	}
+	
+	/**
+	 * Populates the ListView Approval items
+	 */
 	private void initializelistViewApproval()
 	{
 		listViewApproval.getItems().add("Hacking Meeting - 2:00 PM");
 		listViewApproval.getItems().add("Pizza Night - 7:00 PM");
+		
+		
+		
+		
+		
+		
+		
 
 	}
+	/**
+	 * Populates the ListView Accepted items
+	 */
 	private void initializelistViewAccepted()
 	{
-		//listViewAccept.getItems().add("Justin is a nerd");
-		//listViewAccept.getItems().add("Justin is a nerd2");
+		listViewAcceptedEvents.getItems().add("Team Meeting Nerds");
+		listViewAcceptedEvents.getItems().add("Pizza Time");
+		
 	}
+	/**
+	 * Allows the user to accept or reject the event
+	 */
+	private void listViewApprovePushed()
+	{
+		//Obtained from : http://code.makery.ch/blog/javafx-dialogs-official/
+			Platform.runLater(() -> {
+			listViewApproval.setOnMouseClicked(e ->{
+			String textArea = listViewApproval.getSelectionModel().getSelectedItem();
+			System.out.println(textArea);
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Confirmation Event");
+			alert.setHeaderText("Event Actions");
+			alert.setContentText("Choose your option.");
+
+			ButtonType buttonTypeOne = new ButtonType("Accept Event");
+			ButtonType buttonTypeTwo = new ButtonType("Reject Event");
+			ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+
+			alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
+
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == buttonTypeOne){
+			  
+			} else if (result.get() == buttonTypeTwo) {
+			  
+			} else {
+			    
+			}
+			});
+		});	
+	}
+
 
 	/**
 	 * Sets the functions that run when the user clicks on certain objects
 	 */
 	
-	private void listViewPushed()
+	private void listViewAcceptedPushed()
 	{
 		Platform.runLater(() -> {
-			listViewApproval.setOnMouseClicked(e ->{
-			String textArea = listViewApproval.getSelectionModel().getSelectedItem();
+			listViewAcceptedEvents.setOnMouseClicked(e ->{
+			String textArea = listViewAcceptedEvents.getSelectionModel().getSelectedItem();
 			System.out.println(textArea);
-			lblEventName.setText(textArea);
+			lblEventName.setText("Event Name: " + textArea);
 			});
 		});	
 	}
