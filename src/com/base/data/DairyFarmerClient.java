@@ -131,22 +131,28 @@ public class DairyFarmerClient {
      * @param creatorName String representing creator name
      * @param date LocalDate representing day of event
      * @param times List of times for event
+     * @return true if event was created else false
      * @see LocalDate
      * @see Time
      * @see List
      */
-    public void createEvent(String eventName, String creatorName, LocalDate date, List<Time> times) {
+    public boolean createEvent(String eventName, String creatorName, LocalDate date, List<Time> times) {
         Event event = new Event(eventName, creatorName, date, times);
-        //TODO: change to go to else statement if events is null (also return bool)
-        if (events == null) {System.out.println("NULL");}
+        boolean eventCreated = false;
+
         if (events.containsKey(date)) {
             events.get(date).add(event);
+
+            eventCreated = true;
         } else {
             List<Event> tempEvents = new ArrayList<>();
             tempEvents.add(event);
 
             events.put(date, tempEvents);
+            eventCreated = true;
         }
+
+        return eventCreated;
     }
 
     /**
@@ -174,7 +180,6 @@ public class DairyFarmerClient {
         }
 
         return false;
-
     }
 
     /**
