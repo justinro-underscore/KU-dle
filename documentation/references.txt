@@ -1,0 +1,19 @@
+References:
+ * gson by Google
+	- https://github.com/google/gson
+	- used for serializing and deserializing json data
+	- used in DairyFarmerClient.java
+ * gson-javatime-serialisers by gkopff
+	- https://github.com/gkopff/gson-javatime-serialisers
+	- used for serializing and deserializing Java's LocalData and LocalTime
+	- used in DairyFarmerClient.java
+ * e(fx)clipse by eclipse
+	- https://www.eclipse.org/efxclipse/install.html
+	- UI library for design elements
+	- used in CallenderUI.fxml
+	- used in CreateEventUI.fxml
+ * scenebuilder by gluon
+	- http://gluonhq.com/products/scene-builder/
+	- UI for utilizing e(fx)clipse
+	- used in CallenderUI.fxml
+	- used in CreateEventUI.fxml

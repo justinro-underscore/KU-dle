@@ -24,6 +24,10 @@ public class DairyFarmerClient {
      * Initializes gson object
      */
     public DairyFarmerClient() {
+        /*
+        Gson used from gson library by Google
+        Converters.registerAll used from gson-javatime-serialisers by gkopff
+         */
         gson = Converters.registerAll(new GsonBuilder()).create();
     }
 
@@ -40,10 +44,10 @@ public class DairyFarmerClient {
         }
 
         reader = new BufferedReader(new FileReader("res/users.txt"));
-
         String json = reader.readLine();
-        Users tempUsers = gson.fromJson(json, Users.class);
 
+        //Used gson.fromJson from gson library by Google
+        Users tempUsers = gson.fromJson(json, Users.class);
         users = tempUsers.getUsers();
     }
 
@@ -60,10 +64,10 @@ public class DairyFarmerClient {
         }
 
         reader = new BufferedReader(new FileReader("res/events.txt"));
-
         String json = reader.readLine();
-        Events tempEvents = gson.fromJson(json, Events.class);
 
+        //Used gson.fromJson from gson library by Google
+        Events tempEvents = gson.fromJson(json, Events.class);
         events = tempEvents.getEvents();
     }
 
@@ -74,8 +78,9 @@ public class DairyFarmerClient {
      */
     public void saveEvents() throws IOException {
         Events tempEvents = new Events(events);
-        String eventJson = gson.toJson(tempEvents);
 
+        //Used gson.toJson from gson library by Google
+        String eventJson = gson.toJson(tempEvents);
         createFile(eventJson, "res/events.txt");
     }
 
@@ -86,8 +91,9 @@ public class DairyFarmerClient {
      */
     public void saveUsers() throws IOException {
         Users tempUsers = new Users(users);
-        String userJson = gson.toJson(tempUsers);
 
+        //Used gson.toJson from gson library by Google
+        String userJson = gson.toJson(tempUsers);
         createFile(userJson, "res/users.txt");
     }
 
@@ -112,7 +118,6 @@ public class DairyFarmerClient {
      * @see LocalDate
      */
     public List<Event> getEvents(LocalDate date) {
-
         return events.get(date);
     }
 
