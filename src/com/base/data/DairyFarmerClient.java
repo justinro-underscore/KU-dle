@@ -29,6 +29,9 @@ public class DairyFarmerClient {
         Converters.registerAll used from gson-javatime-serialisers by gkopff
          */
         gson = Converters.registerAll(new GsonBuilder()).create();
+
+        events = new HashMap<>();
+        users = new HashMap<>();
     }
 
     /**
@@ -134,6 +137,7 @@ public class DairyFarmerClient {
      */
     public void createEvent(String eventName, String creatorName, LocalDate date, List<Time> times) {
         Event event = new Event(eventName, creatorName, date, times);
+        //TODO: change to go to else statement if events is null (also return bool)
         if (events == null) {System.out.println("NULL");}
         if (events.containsKey(date)) {
             events.get(date).add(event);
