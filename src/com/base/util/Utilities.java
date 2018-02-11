@@ -19,7 +19,7 @@ public class Utilities {
      * @return true if time is valid (does not overlap with other times) else false
      * @deprecated
      */
-    static boolean isTimeValid(Time timeToCompare, List<Time> times) {
+    public static boolean isTimeValid(Time timeToCompare, List<Time> times) {
         int timeToCompareInMin = timeToCompare.getTime().getHour() * 60 + timeToCompare.getTime().getMinute();
         int timeFromListInMin = 0;
 
@@ -38,9 +38,9 @@ public class Utilities {
      *
      * @param existingUsers a hashmap of existing users with taken usernames
      * @param username the username the user wants to use with their new account
-     * @return true if the username is not taken
+     * @return true if the username is taken
      */
-    static boolean userExists(HashMap<String, User> existingUsers, String username) {
+    public static boolean userExists(HashMap<String, User> existingUsers, String username) {
         return (existingUsers.containsKey(username));
     }
 
@@ -52,7 +52,7 @@ public class Utilities {
      * @param eventName name of event to check
      * @return true if event name is taken else false
      */
-    static boolean eventExists(HashMap<LocalDate, List<Event>> events, LocalDate date, String eventName) {
+    public static boolean eventExists(HashMap<LocalDate, List<Event>> events, LocalDate date, String eventName) {
         if (!events.containsKey(date))
             return false;
 
