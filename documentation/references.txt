@@ -1,4 +1,5 @@
 References:
+ : Main program
  * gson by Google
 	- https://github.com/google/gson
 	- used for serializing and deserializing json data
@@ -17,3 +18,14 @@ References:
 	- UI for utilizing e(fx)clipse
 	- used in CallenderUI.fxml
 	- used in CreateEventUI.fxml
+
+ : Testing branch
+ * JUnit 4/5
+    - https://junit.org/junit4/
+    - used for unit test cases
+
+ : Assets
+ * Farmer
+    - http://pixelpeople.wikia.com/wiki/Farmer
+ * Cow
+    - https://www.pinterest.com/pin/367465650829837382/
