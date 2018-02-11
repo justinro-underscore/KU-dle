@@ -46,7 +46,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 
 import com.base.data.DairyFarmerClient;
+import com.base.data.models.User;
 import com.base.main.CreateEventUI;
+import com.base.util.Utilities;
 
 
 
@@ -175,6 +177,10 @@ public class CalendarUI extends Application
 	private int selDateDay = 0; // Day index of selected date
 
 	private DairyFarmerClient client = new DairyFarmerClient();
+	private User user;
+	public String theinputUsername;
+	public String theinputPassword;
+	boolean loginDetails = false;
 
 	/**
 	 * Where the application launches from
@@ -192,8 +198,44 @@ public class CalendarUI extends Application
 	{
 		FXMLLoader load = new FXMLLoader(getClass().getResource("/CalendarUI.fxml")); // You may have to change the path in order to access CalendarUI.fxml TODO make sure this works
 		load.setController(this); // Makes it so that you can control the UI using this class
+		client.initEvents(); // Loads events from a file
+		client.initUsers(); // Loads users from a file
+		
+		while(loginDetails==false)
+		{
+			showLoginPage();
+			
+			if(Utilities.userExists(client.getUsers(),theinputUsername))
+			{
+				if(theinputPassword.equals(client.getUser(theinputUsername).getPassword()) )
+				{
+					loginDetails=true;
+				}
+				else
+				{
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Incorrect Password");
+					alert.setContentText("Please retry inputting your password");
 
-		showLoginPage();
+					alert.showAndWait();
+
+					
+				}
+			}
+			else
+			{
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setHeaderText("Username does not exist");
+				alert.setContentText("Please retry inputting your credentials");
+
+				alert.showAndWait();
+
+				
+			}
+
+		}
 
 		Parent root = (Parent) load.load();
 		Scene scene = new Scene(root);
@@ -208,8 +250,7 @@ public class CalendarUI extends Application
 		stage.setResizable(false);
 		stage.show();
 
-		client.initEvents(); // Loads events from a file
-		client.initUsers(); // Loads users from a file
+		
 
 		setupCalendarBoxes(); // Populates arrays
 		setCurrDate(); // Sets the current date
@@ -219,7 +260,7 @@ public class CalendarUI extends Application
 		initializelistViewAccepted(); // Initializes approved list of events
 		listViewApprovePushed();
 		listViewAcceptedPushed();
-
+		
 		// Happens when user tries to exit
 		stage.setOnCloseRequest(e ->
 		{
@@ -275,6 +316,7 @@ public class CalendarUI extends Application
 		Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
 		loginButton.setDisable(true);
 
+
 		// Do some validation (using the Java 8 lambda syntax).
 		username.textProperty().addListener((observable, oldValue, newValue) ->
 		{
@@ -293,15 +335,22 @@ public class CalendarUI extends Application
 		    {
 		        return new Pair<>(username.getText(), password.getText());
 		    }
+		    if(dialogButton == ButtonType.CANCEL)
+		    {
+		    	//Platform.exit();
+		    	System.exit(-1);
+		    }
 		    return null;
 		});
-
+		
 		Optional<Pair<String, String>> result = dialog.showAndWait();
 
-		result.ifPresent(usernamePassword ->
-		{
-		    System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue()); // Tests the values inputted
-		});
+//		result.ifPresent(usernamePassword ->
+//		{
+//		    System.out.println("Username=" + username.getText() + ", Password=" + password.getText());
+//		});
+		theinputUsername= username.getText();
+		theinputPassword = password.getText();
 	}
 
 	/**
@@ -445,7 +494,7 @@ public class CalendarUI extends Application
 		Platform.runLater(() -> {
 			listViewApproval.setOnMouseClicked(e ->{
 				String textArea = listViewApproval.getSelectionModel().getSelectedItem();
-				System.out.println(textArea);
+				//System.out.println(textArea);
 				Alert alert = new Alert(AlertType.CONFIRMATION);
 				alert.setTitle("Confirmation Event");
 				alert.setHeaderText("Event Actions");
@@ -478,7 +527,7 @@ public class CalendarUI extends Application
 		Platform.runLater(() -> {
 			listViewAcceptedEvents.setOnMouseClicked(e ->{
 			String textArea = listViewAcceptedEvents.getSelectionModel().getSelectedItem();
-			System.out.println(textArea);
+			//System.out.println(textArea);
 			lblEventName.setText("Event Name: " + textArea);
 			});
 		});
@@ -555,10 +604,11 @@ public class CalendarUI extends Application
 
 			Optional<Pair<String, String>> result = dialog.showAndWait();
 
-			result.ifPresent(usernamePassword ->
-			{
-			    System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue() + " Admin? " + yesMode.isSelected()); // Tests the values inputted
-			});
+//			result.ifPresent(usernamePassword ->
+//			{
+//			    System.out.println("Username=" + usernamePassword.getKey() + ", Password=" + usernamePassword.getValue() + " Admin? " + yesMode.isSelected()); // Tests the values inputted
+//			});
+			client.createUser(username.getText(), password.getText(), yesMode.isSelected());
 		});
 	}
 
@@ -710,7 +760,7 @@ public class CalendarUI extends Application
 	private void showChangedMonth()
 	{
 		int dayOfTheWeek = getDayOfTheWeek(1, selectedDate[0], selectedDate[2]); // Gets the day of the week of the first day of the month
-		System.out.println(dayOfTheWeek);
+		//System.out.println(dayOfTheWeek);
 
 		int[][] calendarDates = new int[6][7]; // The dates to be written to the program
 		int prevMonthDays; // Get the amount of days in the previous month
