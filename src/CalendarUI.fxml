@@ -16,7 +16,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane fx:id="paneMain" dividerPositions="0.33" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane fx:id="paneMain" dividerPositions="0.33" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="218.0">
          <children>
@@ -41,12 +41,12 @@
                            <padding>
                               <Insets left="5.0" />
                            </padding></Label>
-                        <ListView fx:id="lstViewAccepted" prefHeight="300.0" prefWidth="400.0" />
+                        <ListView fx:id="lstViewAccepted" prefHeight="225.0" prefWidth="400.0" />
                         <Label text="Events Waiting Approval" underline="true">
                            <padding>
                               <Insets left="5.0" />
                            </padding></Label>
-                        <ListView fx:id="lstViewAvailable" prefHeight="300.0" prefWidth="400.0" />
+                        <ListView fx:id="lstViewAvailable" prefHeight="225.0" prefWidth="400.0" />
                         <Label text="Desciption" underline="true">
                            <VBox.margin>
                               <Insets />
@@ -54,22 +54,24 @@
                            <padding>
                               <Insets left="5.0" />
                            </padding></Label>
-                        <Pane prefHeight="107.0" prefWidth="400.0">
+                        <Pane prefHeight="80.0" prefWidth="400.0">
                            <children>
                               <Label fx:id="lblEventName" alignment="TOP_LEFT" prefHeight="30.0" prefWidth="400.0" text="Event Name:">
                                  <padding>
                                     <Insets left="5.0" />
                                  </padding></Label>
-                              <Label layoutX="-1.0" layoutY="30.0" prefHeight="30.0" prefWidth="400.0" text="Event Creator:">
-                                 <padding>
-                                    <Insets left="5.0" />
-                                 </padding></Label>
-                              <Label layoutY="60.0" prefHeight="40.0" prefWidth="400.0" text="Times: ">
+                              <Label layoutY="30.0" prefHeight="30.0" prefWidth="400.0" text="Event Creator:">
                                  <padding>
                                     <Insets left="5.0" />
                                  </padding></Label>
                            </children>
                         </Pane>
+                        <Label text="Time &amp; Attendees" underline="true" />
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ListView fx:id="listViewTimes" prefHeight="200.0" prefWidth="200.0" />
+                           </children>
+                        </VBox>
                      </children>
                   </VBox>
                   <GridPane GridPane.rowIndex="2">

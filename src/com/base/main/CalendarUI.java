@@ -52,6 +52,7 @@ import com.base.data.DairyFarmerClient;
 import com.base.data.models.Event;
 import com.base.data.models.User;
 import com.base.main.CreateEventUI;
+import com.base.util.Time;
 import com.base.util.Utilities;
 
 
@@ -172,6 +173,7 @@ public class CalendarUI extends Application
 
 	@FXML private ListView<Event> lstViewAvailable; //Initialization of the ListView thats waiting for approval
 	@FXML private ListView<Event> lstViewAccepted; //Initialization of the ListView that is already accepted
+	@FXML private ListView<String> listViewTimes; //Initialization of the ListView that is already accepted
 
 
 	// For displays
@@ -483,7 +485,7 @@ public class CalendarUI extends Application
 			// Start by reseting the lists
 			lstViewAccepted.getItems().removeAll(lstViewAccepted.getItems());
 			lstViewAvailable.getItems().removeAll(lstViewAvailable.getItems());
-
+			
 			// Fill the lists
 			List<Event> events = client.getEvents(selectedDateLD);
 			if(events != null)
@@ -540,8 +542,25 @@ public class CalendarUI extends Application
 	{
 		Platform.runLater(() -> {
 			lstViewAccepted.setOnMouseClicked(e ->{
+				
 				String textArea = lstViewAccepted.getSelectionModel().getSelectedItem().toString();
+				Event currentEvent = lstViewAccepted.getSelectionModel().getSelectedItem();
 				lblEventName.setText("Event Name: " + textArea);
+				lblEventName.setText("Event Creator: " + currentEvent.getCreatorName());
+				listViewTimes.getItems().clear();
+				List<Time> listofTimes = currentEvent.getTimes();
+				StringBuilder builder = new StringBuilder();
+				
+				
+				
+				if(currentEvent!=null)
+				{
+					
+					for (Time time : listofTimes) {
+						listViewTimes.getItems().add(time.getTime().toString() +": " +  time.getAttendees());
+					}
+				}
+				
 			});
 		});
 	}
