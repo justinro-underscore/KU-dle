@@ -34,5 +34,3 @@ To delete a user click the "Delete User" button. It will prompt you with a box t
 To create a new event click the "Create Event" button. It will prompt you with a box to enter the name of the event, a description of the event, and the times that you want the event to be available on. Similar to usernames, event names are unique so if you enter a name that is already taken it will tell you to pick a different name.  
 ### <a name="DeleteEvent"><a/>Deleting Events
 To delete an existing event click the "Delete Event" button. It will prompt you with a box to enter the name of the event you want to delete. You will be prompted if the event is successfully deleted. Otherwise it will tell you that the event doesn't exist.
-# KU-dle
-EECS 448 Project 1 by Team 4
