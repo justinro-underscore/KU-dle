@@ -201,13 +201,13 @@ public class CalendarUI extends Application
 		client.initEvents(); // Loads events from a file
 		client.initUsers(); // Loads users from a file
 		
-		while(loginDetails==false)
+		while(loginDetails==false)  //only reach the calendar UI if the username exists and the password is correct
 		{
 			showLoginPage();
 			
-			if(Utilities.userExists(client.getUsers(),theinputUsername))
+			if(Utilities.userExists(client.getUsers(),theinputUsername)) //if the username exists
 			{
-				if(theinputPassword.equals(client.getUser(theinputUsername).getPassword()) )
+				if(theinputPassword.equals(client.getUser(theinputUsername).getPassword()) ) //if the password is correct
 				{
 					loginDetails=true;
 				}
