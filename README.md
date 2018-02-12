@@ -18,13 +18,13 @@ Team Memebers:
 KU-dle is a scheduling program, similar to Doodle poll. It allows User's to view upcoming events and vote on the times that they are available.
 ## Installation
 You can run KU-dle one of two ways, either from an IDE, or from the jar file.
-###Running From the Jar
-To run KU-dle from a jar, first you must download the jar. You can do so by clicking [here](#https://www.dropbox.com/s/qok4ch3s5raarmv/KU_dle_jar.zip?dl=0). After downloading all you need to do is unzip the folder and click on the .jar file and voila! KU-dle should be running.
+### Running From the Jar
+To run KU-dle from a jar, first you must download the jar. You can do so by clicking [here](https://www.dropbox.com/s/qok4ch3s5raarmv/KU_dle_jar.zip?dl=0). After downloading all you need to do is unzip the folder and click on the .jar file and voila! KU-dle should be running.
 >If this is the first time you are running KU-dle please see [Creating Users](#CreatingUser)
 
  You might also notice that within the zip file there is a folder called "data". This folder is essential to program functionality and must be in the same folder as the .jar file.
-###Running From an IDE
-If you want to run KU-dle from an IDE first you will need an IDE. We like to use intelliJ which can be found [here](#https://www.jetbrains.com/idea/). After you download and setup your IDE of choice you will need to clone or import the project from our [github](#https://github.com/justinro-underscore/KU-dle). You will also need to download and add two dependencies to your IDE to make sure the project can run. The first one is the [gson jar](#https://mvnrepository.com/artifact/com.google.code.gson/gson/2.8.2) and the second one is the [gson serializer jar](#https://mvnrepository.com/artifact/com.fatboyindustrial.gson-javatime-serialisers/gson-javatime-serialisers/1.1.1). For both of these you'll want to download the .jar file and add it to your IDE.
+### Running From an IDE
+If you want to run KU-dle from an IDE first you will need an IDE. We like to use intelliJ which can be found [here](https://www.jetbrains.com/idea/). After you download and setup your IDE of choice you will need to clone or import the project from our [github](https://github.com/justinro-underscore/KU-dle). You will also need to download and add two dependencies to your IDE to make sure the project can run. The first one is the [gson jar](https://mvnrepository.com/artifact/com.google.code.gson/gson/2.8.2) and the second one is the [gson serializer jar](https://mvnrepository.com/artifact/com.fatboyindustrial.gson-javatime-serialisers/gson-javatime-serialisers/1.1.1). For both of these you'll want to download the .jar file and add it to your IDE.
 >Adding dependencies to an IDE varies. If you are having trouble, try looking at the documentation of the IDE you are using.
 
 ## <a name="NormUser"><a/>Functionality for Normal Users
