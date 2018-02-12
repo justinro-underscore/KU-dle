@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +63,30 @@ public class CalendarUI extends Application
 	private Image cowGif = new Image("file:res/assets/cow.gif");
 	@FXML private ImageView btnMonthLeft;
 	@FXML private ImageView btnMonthRight;
+
+	// Background Images
+	@FXML private ImageView imgBackground;
+	private Image dairyFarmers = new Image("file:res/assets/background/DairyFarmersWhoWantDonuts.jpg");
+	private Image alex1 = new Image("file:res/assets/background/alex1.jpg");
+	private Image alex2 = new Image("file:res/assets/background/alex2.jpg");
+	private Image alex3 = new Image("file:res/assets/background/alex3.jpg");
+	private Image alex4 = new Image("file:res/assets/background/alex4.jpg");
+	private Image justin1 = new Image("file:res/assets/background/justin1.jpg");
+	private Image justin2 = new Image("file:res/assets/background/justin2.jpg");
+	private Image justin3 = new Image("file:res/assets/background/justin3.jpg");
+	private Image justin4 = new Image("file:res/assets/background/justin4.jpg");
+	private Image noah1 = new Image("file:res/assets/background/noah1.jpg");
+	private Image noah2 = new Image("file:res/assets/background/noah2.jpg");
+	private Image noah3 = new Image("file:res/assets/background/noah3.jpg");
+	private Image varun1 = new Image("file:res/assets/background/varun1.jpg");
+	private Image varun2 = new Image("file:res/assets/background/varun2.jpg");
+	private Image varun3 = new Image("file:res/assets/background/varun3.jpg");
+	private Image harry1 = new Image("file:res/assets/background/harry1.jpg");
+	private Image harry2 = new Image("file:res/assets/background/harry2.jpg");
+	private Image harry3 = new Image("file:res/assets/background/harry3.jpg");
+	private Image harry4 = new Image("file:res/assets/background/harry4.jpg");
+	private Image[] backgroundPictures = {dairyFarmers, alex1, alex2, alex3, alex4, justin1, justin2, justin3, justin4, noah1, noah2, noah3, varun1, varun2, varun3, harry1, harry2, harry3, harry4};
+	private int currentIndex = 0;
 
 	@FXML private CheckBox chckTwentyfour;
 	@FXML private Label lblAdminDisable;
@@ -256,6 +281,9 @@ public class CalendarUI extends Application
 		//Arrow Pictures
 		btnMonthLeft.setImage(arrow);
 		btnMonthRight.setImage(arrow);
+
+		// Set the background
+		imgBackground.setImage(dairyFarmers);
 
 		// Start the application
 		stage.setTitle("Calendar");
@@ -773,7 +801,18 @@ public class CalendarUI extends Application
 			selectedDateLD = LocalDate.of(selectedDateArr[2], selectedDateArr[0], selectedDateArr[1]); // Update selectedDateLD
 			showChangedMonth();
 		}
+		changeBackground();
 		updateLists();
+	}
+
+	private void changeBackground()
+	{
+		Random rand = new Random();
+		int num = rand.nextInt(backgroundPictures.length);
+		while(num == currentIndex)
+			num = rand.nextInt(backgroundPictures.length);
+		currentIndex = num;
+		imgBackground.setImage(backgroundPictures[currentIndex]);
 	}
 
 	/**
