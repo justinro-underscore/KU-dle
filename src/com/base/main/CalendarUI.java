@@ -65,6 +65,7 @@ public class CalendarUI extends Application
 	@FXML private ImageView btnMonthRight;
 
 	// Background Images
+	@FXML private CheckBox chckShowBackground;
 	@FXML private ImageView imgBackground;
 	private Image dairyFarmers = new Image("file:res/assets/background/DairyFarmersWhoWantDonuts.jpg");
 	private Image alex1 = new Image("file:res/assets/background/alex1.jpg");
@@ -671,10 +672,17 @@ public class CalendarUI extends Application
 			}
 		}
 
+		// Turns on/off 24-hour mode
 		chckTwentyfour.setOnAction(e ->
 		{
 			Time.setTwentyFourMode(chckTwentyfour.isSelected());
 			updateLists();
+		});
+
+		// Toggles the background
+		chckShowBackground.setOnAction(e ->
+		{
+			imgBackground.setVisible(chckShowBackground.isSelected());
 		});
 	}
 
