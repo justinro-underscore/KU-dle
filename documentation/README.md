@@ -1,6 +1,6 @@
 # <a name="Title"><a/>KU-dle
 
-[![gson]](https://github.com/google/gson)
+[[gson]](https://github.com/google/gson)
 
 EECS 448 Project 1 by Team 4
 Team Memebers:
