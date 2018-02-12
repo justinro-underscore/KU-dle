@@ -40,7 +40,7 @@
                <children>
                   <Label fx:id="lblEventName" text="Event Name" />
                   <TextField fx:id="txtEventName" promptText="Event Name..." GridPane.columnIndex="1" />
-                  <TextArea fx:id="txtEventDesc" promptText="Event Description..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextArea fx:id="txtEventDesc" promptText="Event Description..." wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label fx:id="lblEventDesc" text="Event Description" GridPane.rowIndex="1" />
                   <GridPane GridPane.columnIndex="1" GridPane.rowIndex="3">
                     <columnConstraints>

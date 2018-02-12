@@ -1,1 +1,1 @@
-{"user_list":{"root":{"name":"root","password":"pass","isAdmin":true},"root4":{"name":"root4","password":"pass4","isAdmin":true},"root2":{"name":"root2","password":"pass2","isAdmin":false},"root3":{"name":"root3","password":"pass3","isAdmin":false}}}
+{"user_list":{"":{"name":"","password":"","isAdmin":false},"root":{"name":"root","password":"pass","isAdmin":true},"root4":{"name":"root4","password":"pass4","isAdmin":true},"root2":{"name":"root2","password":"pass2","isAdmin":false},"root3":{"name":"root3","password":"pass3","isAdmin":false}}}
