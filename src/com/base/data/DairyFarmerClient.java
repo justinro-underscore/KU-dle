@@ -9,6 +9,8 @@ import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.gson.*;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.*;
 import java.util.*;
 
@@ -43,13 +45,7 @@ public class DairyFarmerClient {
      * @throws IOException If an input or output exception occurred
      */
     public void initUsers() throws IOException {
-        File userFile = new File("res/users.txt");
-        if (!userFile.exists()) {
-            users = new HashMap<>();
-            return;
-        }
-
-        reader = new BufferedReader(new FileReader("res/users.txt"));
+        reader = new BufferedReader(new FileReader("data/users.txt"));
         String json = reader.readLine();
 
         //Used gson.fromJson from gson library by Google
@@ -63,13 +59,7 @@ public class DairyFarmerClient {
      * @throws IOException If an input or output exception occurred
      */
     public void initEvents() throws IOException {
-        File eventsFile = new File("res/events.txt");
-        if (!eventsFile.exists()) {
-            events = new HashMap<>();
-            return;
-        }
-
-        reader = new BufferedReader(new FileReader("res/events.txt"));
+        reader = new BufferedReader(new FileReader("data/events.txt"));
         String json = reader.readLine();
 
         //Used gson.fromJson from gson library by Google
@@ -87,7 +77,7 @@ public class DairyFarmerClient {
 
         //Used gson.toJson from gson library by Google
         String eventJson = gson.toJson(tempEvents);
-        createFile(eventJson, "res/events.txt");
+        createFile(eventJson, "data/events.txt");
     }
 
     /**
@@ -100,20 +90,22 @@ public class DairyFarmerClient {
 
         //Used gson.toJson from gson library by Google
         String userJson = gson.toJson(tempUsers);
-        createFile(userJson, "res/users.txt");
+        createFile(userJson, "data/users.txt");
     }
 
     /**
      * Writes json data to file
      *
      * @param json String representing json data
-     * @param fileName String representing file name
+     * @param fileName URL representing file path
      * @throws IOException If an input or output exception occurred
      */
     public void createFile(String json, String fileName) throws IOException {
-        writer = new FileWriter(fileName);
-        writer.write(json);
-        writer.close();
+
+            writer = new FileWriter(fileName);
+            writer.write(json);
+            writer.close();
+
     }
 
     /**

@@ -1,1 +1,0 @@
-{"user_list":{"root":{"name":"root","password":"pass","isAdmin":true},"guest":{"name":"guest","password":"pass","isAdmin":false}}}
