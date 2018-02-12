@@ -36,7 +36,9 @@ public class AcceptEventUI
 
 	/**
 	 * Where the application launches from
-	 * @throws IOException
+	 * @param userParam User to keep track of calling user
+     * @param eventParam Event to keep track of selected event
+	 * @throws IOException If an input or output exception occurred
 	 */
 	public AcceptEventUI(User userParam, Event eventParam) throws IOException
 	{
@@ -127,10 +129,10 @@ public class AcceptEventUI
 	/**
 	 *
 	 * http://code.makery.ch/blog/javafx-dialogs-official/
-	 * @param title
-	 * @param header
-	 * @param content
-	 * @param type
+	 * @param title String representing title of dialog box
+	 * @param header String representing head of dialog box
+	 * @param content Content of dialog box
+	 * @param type Type of dialog box
 	 */
 	public void showDialogBox(String title, String header, String content, AlertType type)
 	{
@@ -144,7 +146,7 @@ public class AcceptEventUI
 
 	/**
 	 * Returns if the window is finished
-	 * @return if the window is finished
+	 * @return true if the window is finished
 	 */
 	public boolean getWindowFinished()
 	{

@@ -131,9 +131,11 @@ public class DairyFarmerClient {
      * Creates an event with specified information
      *
      * @param eventName String representing event name
+     * @param description String representing event description
      * @param creatorName String representing creator name
      * @param date LocalDate representing day of event
      * @param times List of times for event
+     * @param attendees List of attendees for event
      * @return true if event was created
      * @see LocalDate
      * @see Time
@@ -187,6 +189,7 @@ public class DairyFarmerClient {
      * @param username String representing username
      * @param password String representing password
      * @param isAdmin boolean representing admin status of user
+     * @return true if user is created
      */
     public boolean createUser(String username, String password, boolean isAdmin)
     {
