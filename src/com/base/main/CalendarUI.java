@@ -3,7 +3,6 @@ package com.base.main;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -12,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -36,22 +34,18 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Pair;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextInputDialog;
 
 import com.base.data.DairyFarmerClient;
 import com.base.data.models.Event;
 import com.base.data.models.User;
 import com.base.main.CreateEventUI;
+import com.base.main.CreateUserUI;
+
 import com.base.util.Time;
 import com.base.util.Utilities;
 
@@ -66,7 +60,6 @@ public class CalendarUI extends Application
 	@FXML private Label lblSelectedDate2;
 	private Image arrow = new Image("file:res/assets/arrow.png");
 	private Image cowGif = new Image("file:res/assets/cow.gif");
-	private Image farmer = new Image("file:res/assets/farmer.png");
 	@FXML private ImageView btnMonthLeft;
 	@FXML private ImageView btnMonthRight;
 
@@ -210,7 +203,7 @@ public class CalendarUI extends Application
 	 */
 	public void start(Stage stage) throws Exception
 	{
-		FXMLLoader load = new FXMLLoader(getClass().getResource("/CalendarUI.fxml")); // You may have to change the path in order to access CalendarUI.fxml TODO make sure this works
+		FXMLLoader load = new FXMLLoader(getClass().getResource("/CalendarUI.fxml")); // You may have to change the path in order to access CalendarUI.fxml
 		load.setController(this); // Makes it so that you can control the UI using this class
 		client.initEvents(); // Loads events from a file
 		client.initUsers(); // Loads users from a file
@@ -364,7 +357,7 @@ public class CalendarUI extends Application
 		    return null;
 		});
 
-		Optional<Pair<String, String>> result = dialog.showAndWait();
+		dialog.showAndWait();
 
 		inputUsername = username.getText();
 		inputPassword = password.getText();
@@ -382,12 +375,18 @@ public class CalendarUI extends Application
 		for(int i = 0; i < 3; i++)
 		{
 			selectedDateArr[i] = currentDateArr[i]; // Makes the selected date the current date at the initialization of the program
+
+			selectedDateArr[i] = currentDateArr[i]; // Makes the selected date the current date at the initialization of the program
 		}
 		currentDateLD = LocalDate.now();
 		selectedDateLD = LocalDate.now();
 	}
 
 	/**
+			selectedDateArr[i] = currentDateArr[i]; // Makes the selected date the current date at the initialization of the program
+
+			selectedDateArr[i] = currentDateArr[i]; // Makes the selected date the current date at the initialization of the program
+
 	 * Populates the calendar box arrays with the FXML labels and boxes
 	 */
 	private void setupCalendarBoxes()
@@ -581,80 +580,6 @@ public class CalendarUI extends Application
 		});
 	}
 
-	/**
-	 * Creates the user
-	 */
-	private void createUser()
-	{
-		Platform.runLater(() -> {
-			FXMLLoader load = new FXMLLoader(getClass().getResource("/CalendarUI.fxml")); // You may have to change the path in order to access CalendarUI.fxml TODO make sure this works
-			load.setController(this); // Makes it so that you can control the UI using this class
-
-			//Obtained from : http://code.makery.ch/blog/javafx-dialogs-official/
-			// Create the custom dialog.
-			Dialog<Pair<String, String>> dialog = new Dialog<>(); //Creates the dialog for the login portal
-			dialog.setTitle("User Creation Portal"); //Naming Scheme
-			dialog.setHeaderText("Create a User"); //Naming Scheme
-
-			// Set the icon (must be included in the project).
-			//picture from http://pixelpeople.wikia.com/wiki/Farmer
-			ImageView ivFarmer = new ImageView();
-			ivFarmer.setImage(farmer);
-			dialog.setGraphic(ivFarmer); //THE LORD AND SAVIOR OUR COW!
-
-			// Set the button types.
-			ButtonType loginButtonType = new ButtonType("Create User", ButtonData.OK_DONE); //Options for Buttons
-			dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL); // Cancel Button
-
-			// Create the username and password labels and fields.
-			GridPane grid = new GridPane();
-			grid.setHgap(10);
-			grid.setVgap(10);
-			grid.setPadding(new Insets(20, 150, 10, 10));
-
-			// Username Field for the Fields
-			TextField username = new TextField();
-			username.setPromptText("Username");
-			PasswordField password = new PasswordField();
-			password.setPromptText("Password");
-			CheckBox yesMode = new CheckBox("Yes");
-
-			grid.add(new Label("Unique User Username:"), 0, 0);
-			grid.add(username, 1, 0);
-			grid.add(new Label("User " + "Password:"), 0, 1);
-			grid.add(password, 1, 1);
-			grid.add(new Label("Admin?"), 0, 2);
-			grid.add(yesMode, 1, 2);
-
-			// Enable/Disable login button depending on whether a username was entered.
-			Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-			loginButton.setDisable(true);
-
-			// Do some validation (using the Java 8 lambda syntax).
-			username.textProperty().addListener((observable, oldValue, newValue) -> {
-				loginButton.setDisable(newValue.trim().isEmpty());
-			});
-
-			dialog.getDialogPane().setContent(grid);
-
-			// Request focus on the username field by default.
-			Platform.runLater(() -> username.requestFocus());
-
-			// Convert the result to a username-password-pair when the login button is clicked.
-			dialog.setResultConverter(dialogButton ->
-			{
-			    if (dialogButton == loginButtonType)
-			    {
-			        return new Pair<>(username.getText(), password.getText());
-			    }
-			    return null;
-			});
-
-			Optional<Pair<String, String>> result = dialog.showAndWait();
-
-			client.createUser(username.getText(), password.getText(), yesMode.isSelected());
-		});
-	}
 
 	/**
 	 * Initializes the buttons and tells them what to do when they are clicked on
@@ -678,7 +603,13 @@ public class CalendarUI extends Application
 		// Opens the create a user function
 		btnCreateUser.setOnAction(e ->
 		{
-			createUser();
+			try {
+				openCreateUser(); // Opens the create user window
+			}
+			catch (Exception e1)
+			{
+				e1.printStackTrace();
+			}
 		});
 
 		// Goes back a month
@@ -744,13 +675,38 @@ public class CalendarUI extends Application
 	{
 		paneMain.setDisable(true); // Disables the Calendar
 		CreateEventUI event = new CreateEventUI(client, user, selectedDateLD);
-		// Obtained (in part) from https://stackoverflow.com/questions/24104313/how-to-delay-in-java
+		// Obtained (in part) from https://stackoverflow.com/questions/24104313/how-to-delay-in-java by Boris the Spider
 		final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 	    executorService.scheduleAtFixedRate(new Runnable() {
 	        @Override
 	        public void run()
 	        {
 	            if(event.getEventFinished())
+	            {
+	            	updateLists();
+	            	paneMain.setDisable(false);
+	            	Thread.currentThread().stop();
+	            }
+	        }
+	    }, 0, 1, TimeUnit.SECONDS);
+	}
+
+	/**
+	 * Opens the create user window
+	 * @throws IOException In case CreateUserUI screws up
+	 * @throws InterruptedException For the thread
+	 */
+	private void openCreateUser() throws IOException, InterruptedException
+	{
+		paneMain.setDisable(true); // Disables the Calendar
+		CreateUserUI event = new CreateUserUI(client);
+		// Obtained (in part) from https://stackoverflow.com/questions/24104313/how-to-delay-in-java by Boris the Spider
+		final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+	    executorService.scheduleAtFixedRate(new Runnable() {
+	        @Override
+	        public void run()
+	        {
+	            if(event.getWindowFinished())
 	            {
 	            	updateLists();
 	            	paneMain.setDisable(false);
@@ -769,7 +725,7 @@ public class CalendarUI extends Application
 	{
 		paneMain.setDisable(true); // Disables the Calendar
 		AcceptEventUI accept = new AcceptEventUI(user, event);
-		// Obtained (in part) from https://stackoverflow.com/questions/24104313/how-to-delay-in-java
+		// Obtained (in part) from https://stackoverflow.com/questions/24104313/how-to-delay-in-java by Boris the Spider
 		final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 	    executorService.scheduleAtFixedRate(new Runnable() {
 	        @Override
@@ -847,6 +803,13 @@ public class CalendarUI extends Application
 					calendarDateBoxes[selDateRow][selDateDay].setFill(clrActivated); // Light Gray - Activated
 				else
 					calendarDateBoxes[selDateRow][selDateDay].setFill(clrEvents); // Green - Events on this day
+
+				if(calendarDateLabels[selDateRow][selDateDay].getText().equals("25") && selectedDateArr[0] == 12)
+					calendarDateBoxes[selDateRow][selDateDay].setFill(Color.RED); // Red - No events allowed
+				if(calendarDateLabels[selDateRow][selDateDay].getText().equals("1") && selectedDateArr[0] == 1)
+					calendarDateBoxes[selDateRow][selDateDay].setFill(Color.RED);
+				if(calendarDateLabels[selDateRow][selDateDay].getText().equals("4") && selectedDateArr[0] == 7)
+					calendarDateBoxes[selDateRow][selDateDay].setFill(Color.RED);
 			}
 			calendarDateBoxes[row][day].setFill(clrSelDate);
 			selectedDateLD = LocalDate.of(selectedDateArr[2], selectedDateArr[0], selectedDateArr[1]); // Update selectedDateLD
@@ -978,6 +941,12 @@ public class CalendarUI extends Application
 						else
 							calendarDateBoxes[rowCal][dayCal].setFill(clrEvents); // Green - Events on this day
 					}
+					if(calendarDates[rowCal][dayCal] == 25 && selectedDateArr[0] == 12 && hitFirst)
+						calendarDateBoxes[rowCal][dayCal].setFill(Color.RED); // Red - No events allowed
+					if(calendarDates[rowCal][dayCal] == 1 && selectedDateArr[0] == 1 && hitFirst)
+						calendarDateBoxes[rowCal][dayCal].setFill(Color.RED);
+					if(calendarDates[rowCal][dayCal] == 4 && selectedDateArr[0] == 7 && hitFirst)
+						calendarDateBoxes[rowCal][dayCal].setFill(Color.RED);
 					if(calendarDates[rowCal][dayCal] == selectedDateArr[1] && hitFirst) // If the cell is the selected date
 					{
 						calendarDateBoxes[rowCal][dayCal].setFill(clrSelDate); // Blue - Selected date

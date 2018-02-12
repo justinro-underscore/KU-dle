@@ -40,13 +40,13 @@ public class AcceptEventUI
 	 */
 	public AcceptEventUI(User userParam, Event eventParam) throws IOException
 	{
-		FXMLLoader load = new FXMLLoader(getClass().getResource("/AcceptEventUI.fxml")); // You may have to change the path in order to access CalendarUI.fxml TODO make sure this works
+		FXMLLoader load = new FXMLLoader(getClass().getResource("/AcceptEventUI.fxml")); // You may have to change the path in order to access CalendarUI.fxml
 		load.setController(this); // Makes it so that you can control the UI using this class
 
 		Parent root = (Parent) load.load();
 		Scene scene = new Scene(root);
 
-		lstAvailableTimes.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		lstAvailableTimes.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // So we can select multiple times
 		lstChosenTimes.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		lstAvailableTimes.getItems().addAll(eventParam.getTimes());
 
@@ -54,12 +54,12 @@ public class AcceptEventUI
 		user = userParam;
 		event = eventParam;
 		Stage stage = new Stage();
-		stage.setTitle("Create Event");
+		stage.setTitle("Choose Times");
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.show();
 		initializeListeners(stage);
-		stage.setOnCloseRequest(e ->
+		stage.setOnCloseRequest(e -> // In case the user exits without pressing cancel
 		{
 			done = true;
 		});
@@ -70,9 +70,10 @@ public class AcceptEventUI
 	 */
 	private void initializeListeners(Stage stage)
 	{
+		// Add the times user can go
 		btnAddTime.setOnAction(e ->
 		{
-			ObservableList<Time> temp = lstAvailableTimes.getSelectionModel().getSelectedItems();
+			ObservableList<Time> temp = lstAvailableTimes.getSelectionModel().getSelectedItems(); // See CreateEventUI.java for explanations on this - I'm too lazy to rewrite it
 			Time[] selectedTimes = temp.toArray(new Time[0]);
 
             for(Time time : selectedTimes)
@@ -83,6 +84,7 @@ public class AcceptEventUI
         	lstChosenTimes.getItems().sort((Time t1, Time t2) -> t1.getTime().compareTo(t2.getTime()));
 		});
 
+		// Remove the times the user can't go
 		btnRemTime.setOnAction(e ->
 		{
 			ObservableList<Time> temp = lstChosenTimes.getSelectionModel().getSelectedItems();
@@ -96,15 +98,16 @@ public class AcceptEventUI
             lstAvailableTimes.getItems().sort((Time t1, Time t2) -> t1.getTime().compareTo(t2.getTime()));
 		});
 
+		// Commit to going to te event
 		btnApprove.setOnAction(e ->
 		{
-			if(!lstChosenTimes.getItems().isEmpty())
+			if(!lstChosenTimes.getItems().isEmpty()) // If the chosen times have times in it
 			{
-				event.addAttendee(user);
+				event.addAttendee(user); // Add the attendee
 				List<Time> times = lstChosenTimes.getItems();
 				for(Time t : times)
 				{
-					t.addAttendee(user);
+					t.addAttendee(user); // Add the user to all of the times
 				}
 				showDialogBox("Approved Event", "Approved Event!", "You have committed to going to \"" + event.getEventName() + "\"!", AlertType.INFORMATION);
 				done = true;
@@ -139,6 +142,10 @@ public class AcceptEventUI
 		alert.showAndWait();
 	}
 
+	/**
+	 * Returns if the window is finished
+	 * @return if the window is finished
+	 */
 	public boolean getWindowFinished()
 	{
 		return done;

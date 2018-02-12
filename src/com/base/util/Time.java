@@ -70,7 +70,6 @@ public class Time {
 		{
 			for(int i = 0; i < attendees.size(); i++)
 			{
-				System.out.println(attendees.get(i));
 				if(attendees.get(i).equals(attendee))
 					return true;
 			}

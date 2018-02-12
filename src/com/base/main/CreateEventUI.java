@@ -42,8 +42,8 @@ public class CreateEventUI
 	@FXML private Button btnCreate;
 
 	private DairyFarmerClient client;
-	private User admin;
-	private LocalDate currDate;
+	private User admin; // The user
+	private LocalDate currDate; // The current date
 
 	private boolean eventCreated = false; // Will tell whether or not the event is created
 
@@ -53,13 +53,13 @@ public class CreateEventUI
 	 */
 	public CreateEventUI(DairyFarmerClient clientParam, User adminParam, LocalDate currDateParam) throws IOException
 	{
-		FXMLLoader load = new FXMLLoader(getClass().getResource("/CreateEvent.fxml")); // You may have to change the path in order to access CalendarUI.fxml TODO make sure this works
+		FXMLLoader load = new FXMLLoader(getClass().getResource("/CreateEvent.fxml")); // You may have to change the path in order to access CalendarUI.fxml
 		load.setController(this); // Makes it so that you can control the UI using this class
 
 		Parent root = (Parent) load.load();
 		Scene scene = new Scene(root);
 
-		lstPossibleTimes.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		lstPossibleTimes.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // Makes it so you can choose multiple times
 		lstChosenTimes.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		lstPossibleTimes.getItems().addAll(getPossibleTimes());
 
@@ -84,19 +84,21 @@ public class CreateEventUI
 	 */
 	private void initializeListeners(Stage stage)
 	{
+		// Adds the time to the event
 		btnAddTime.setOnAction(e ->
 		{
-			ObservableList<Time> temp = lstPossibleTimes.getSelectionModel().getSelectedItems();
+			ObservableList<Time> temp = lstPossibleTimes.getSelectionModel().getSelectedItems(); // Get the selected times
 			Time[] selectedTimes = temp.toArray(new Time[0]);
 
-            for(Time time : selectedTimes)
+            for(Time time : selectedTimes) // Move the times
             {
             	lstChosenTimes.getItems().add(time);
             	lstPossibleTimes.getItems().remove(time);
             }
-        	lstChosenTimes.getItems().sort((Time t1, Time t2) -> t1.getTime().compareTo(t2.getTime()));
+        	lstChosenTimes.getItems().sort((Time t1, Time t2) -> t1.getTime().compareTo(t2.getTime())); // Sort the times
 		});
 
+		// Deletes the time from the event
 		btnDelTime.setOnAction(e ->
 		{
 			ObservableList<Time> temp = lstChosenTimes.getSelectionModel().getSelectedItems();
@@ -110,16 +112,17 @@ public class CreateEventUI
         	lstPossibleTimes.getItems().sort((Time t1, Time t2) -> t1.getTime().compareTo(t2.getTime()));
 		});
 
+		// Creates the event
 		btnCreate.setOnAction(e ->
 		{
-			if(checkInputs())
+			if(checkInputs()) // Check the inputs
 			{
-				List<Time> tempTime = lstChosenTimes.getItems();
+				List<Time> tempTime = lstChosenTimes.getItems(); // The chosen times
 				for(Time t : tempTime)
 				{
-					t.addAttendee(admin);
+					t.addAttendee(admin); // Adds an attendee to the times
 				}
-				List<User> tempUser = new ArrayList<User>();
+				List<User> tempUser = new ArrayList<User>(); // Necessary for the event creation
 				tempUser.add(admin);
 				client.createEvent(txtEventName.getText(), txtEventDesc.getText(), admin.getName(), currDate, tempTime, tempUser);
 				showDialogBox("Event Created", "Event Created!", "Event \"" + txtEventName.getText() + "\" was successfully created!", AlertType.INFORMATION);
@@ -129,6 +132,10 @@ public class CreateEventUI
 		});
 	}
 
+	/**
+	 * Checks to make sure inputs are correct
+	 * @return whether or not the event can be created
+	 */
 	private boolean checkInputs()
 	{
 		if(txtEventName.getText().isEmpty())
@@ -149,6 +156,7 @@ public class CreateEventUI
 			lstPossibleTimes.requestFocus();
 			return false;
 		}
+		// If the event name already exists today
 		List<Event> temp = client.getEvents(currDate);
 		if(temp != null)
 		{
@@ -183,14 +191,18 @@ public class CreateEventUI
 		alert.showAndWait();
 	}
 
+	/**
+	 * Gets a list of possible times
+	 * @return the list of possible times
+	 */
 	private ArrayList<Time> getPossibleTimes()
 	{
 		ArrayList<Time> times = new ArrayList<Time>();
 		Time tempTime;
 		ArrayList<User> tempUsers = new ArrayList<User>();
-		for(int hour = 5; hour < 24; hour++)
+		for(int hour = 5; hour < 24; hour++) // Cannot be from 12 - 5
 		{
-			if(hour != 12)
+			if(hour != 12) // Cannot be from 12 - 1
 			{
 				for(int min = 0; min < 60; min += 20)
 				{
@@ -202,6 +214,10 @@ public class CreateEventUI
 		return times;
 	}
 
+	/**
+	 * Returns if the event is finished
+	 * @return if the event is finished
+	 */
 	public boolean getEventFinished()
 	{
 		return eventCreated;
