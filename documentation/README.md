@@ -1,5 +1,11 @@
 # <a name="Title"><a/>KU-dle
 
+Dependencies:
+[gson](https://github.com/google/gson) __|__
+[gson-javatime-serialisers](https://github.com/gkopff/gson-javatime-serialisers) __|__
+[e(fx)clipse by eclipse](https://www.eclipse.org/efxclipse/install.html) __|__
+[scenebuilder by gluon](http://gluonhq.com/products/scene-builder/)
+
 EECS 448 Project 1 by Team 4
 Team Memebers:
   * Justin Roderman
