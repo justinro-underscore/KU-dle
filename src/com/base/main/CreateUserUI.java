@@ -42,7 +42,8 @@ public class CreateUserUI
 
 	/**
 	 * Where the application launches from
-	 * @throws IOException
+	 * @param clientParam DairyFarmer client to keep track of current data
+	 * @throws IOException If an input or output exception occurred
 	 */
 	public CreateUserUI(DairyFarmerClient clientParam) throws IOException
 	{
@@ -97,9 +98,9 @@ public class CreateUserUI
 
 	/**
 	 * Validates user input
-	 * @param username
-	 * @param password
-	 * @return
+	 * @param username String representing username
+	 * @param password String representing user password
+	 * @return true if valid user input
 	 */
 	private boolean checkInputs(String username, String password)
 	{
@@ -127,10 +128,10 @@ public class CreateUserUI
 	/**
 	 *
 	 * http://code.makery.ch/blog/javafx-dialogs-official/
-	 * @param title
-	 * @param header
-	 * @param content
-	 * @param type
+	 * @param title String representing title of dialog box
+	 * @param header String representing head of dialog box
+	 * @param content Content of dialog box
+	 * @param type Type of dialog box
 	 */
 	public void showDialogBox(String title, String header, String content, AlertType type)
 	{

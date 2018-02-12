@@ -20,6 +20,7 @@ public class Event {
      * Creates an event with the specified values
      *
      * @param eventName String representing event name
+	 * @param description String representing description of event
      * @param creatorName String representing creator name
      * @param date LocalDate representing event's date
      * @param times List of times for event

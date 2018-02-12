@@ -680,7 +680,7 @@ public class CalendarUI extends Application
 
 	/**
 	 * Checks to see if user can create an event
-	 * @return if you can create an event
+	 * @return true if you can create an event
 	 */
 	private boolean canCreateEvent()
 	{
@@ -1017,10 +1017,10 @@ public class CalendarUI extends Application
 	/**
 	 *
 	 * http://code.makery.ch/blog/javafx-dialogs-official/
-	 * @param title
-	 * @param header
-	 * @param content
-	 * @param type
+	 * @param title String representing title of dialog box
+	 * @param header String representing head of dialog box
+	 * @param content Content of dialog box
+	 * @param type Type of dialog box
 	 */
 	public void showDialogBox(String title, String header, String content, AlertType type)
 	{

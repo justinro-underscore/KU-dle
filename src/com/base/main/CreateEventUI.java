@@ -49,7 +49,10 @@ public class CreateEventUI
 
 	/**
 	 * Where the application launches from
-	 * @throws IOException
+	 * @param clientParam DairyFarmer client to keep track of current data
+     * @param adminParam User to keep track of calling user
+     * @param currDateParam Date to keep track of calling date
+	 * @throws IOException If an input or output exception occurred
 	 */
 	public CreateEventUI(DairyFarmerClient clientParam, User adminParam, LocalDate currDateParam) throws IOException
 	{
@@ -176,10 +179,10 @@ public class CreateEventUI
 	/**
 	 *
 	 * http://code.makery.ch/blog/javafx-dialogs-official/
-	 * @param title
-	 * @param header
-	 * @param content
-	 * @param type
+	 * @param title String representing title of dialog box
+	 * @param header String representing head of dialog box
+	 * @param content Content of dialog box
+	 * @param type Type of dialog box
 	 */
 	public void showDialogBox(String title, String header, String content, AlertType type)
 	{
