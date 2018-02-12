@@ -9,10 +9,12 @@ Dependencies:
 EECS 448 Project 1 by Team 4
 Team Memebers:
   * Justin Roderman
-  * Varun Chada
+  * Varun Chadha
   * Harrison Luo
-  * Alex Kuntz
+  * Alex Kunz
   * Noah Brabec
+  
+Team Name: Dairy Farmers Who Want Donuts
 
 ## <a name="Overview"><a/>Project Overview
 KU-dle is a scheduling program, similar to Doodle poll. It allows User's to view upcoming events and vote on the times that they are available.
