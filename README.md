@@ -34,9 +34,5 @@ After selecting the event you will be prompted will a list of times that the eve
 Admin Users can do anything that a normal user can do plus Creating a new User, Deleting an existing user, Creating a new event, Creating a new Event, and Deleting an existing Event.
 ### <a name="CreatingUser"><a/>Creating Users
 To create a new user click the "Create User" button on the bottom left of the screen. A Screen will pop up with fields for a user name and a password. There is also a check box to select if the new user should be granted admin privileges or not. Usernames are unique, so if the username you selected is already taken it will not allow you add it and you'll have to pick another name.
-### <a name="DeleteUser"><a/>Deleting Users
-To delete a user click the "Delete User" button. It will prompt you with a box to enter the username of the User you are trying to delete. If the user exists it will tell you that the user was successfully deleted. Otherwise it will tell you nothing happened.
 ### <a name="CreateEvent"><a/>Creating Events
-To create a new event click the "Create Event" button. It will prompt you with a box to enter the name of the event, a description of the event, and the times that you want the event to be available on. Similar to usernames, event names are unique so if you enter a name that is already taken it will tell you to pick a different name.  
-### <a name="DeleteEvent"><a/>Deleting Events
-To delete an existing event click the "Delete Event" button. It will prompt you with a box to enter the name of the event you want to delete. You will be prompted if the event is successfully deleted. Otherwise it will tell you that the event doesn't exist.
+To create a new event click the "Create Event" button. It will prompt you with a box to enter the name of the event, a description of the event, and the times that you want the event to be available on. Similar to usernames, event names are unique so if you enter a name that is already taken it will tell you to pick a different name.
