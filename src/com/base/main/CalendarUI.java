@@ -70,9 +70,13 @@ public class CalendarUI extends Application
 	@FXML private ImageView btnMonthLeft;
 	@FXML private ImageView btnMonthRight;
 
+	@FXML private CheckBox chckTwentyfour;
 	@FXML private Label lblAdminDisable;
 	@FXML private Button btnCreateEvent;
 	@FXML private Button btnCreateUser;
+
+	@FXML private TextArea lblEventName;
+	@FXML private TextArea lblEventDesc;
 
 	// Calendar boxes
 	private Label[][] calendarDateLabels = new Label[6][7];
@@ -118,7 +122,6 @@ public class CalendarUI extends Application
 	@FXML private Label lblDay02;
 	@FXML private Label lblDay01;
 	@FXML private Label lblDay00;
-	@FXML private Label lblEventName;
 
 	private Rectangle[][] calendarDateBoxes = new Rectangle[6][7];
 	@FXML private Rectangle boxDay56;
@@ -173,8 +176,7 @@ public class CalendarUI extends Application
 
 	@FXML private ListView<Event> lstViewAvailable; //Initialization of the ListView thats waiting for approval
 	@FXML private ListView<Event> lstViewAccepted; //Initialization of the ListView that is already accepted
-	@FXML private ListView<String> listViewTimes; //Initialization of the ListView that is already accepted
-
+	@FXML private ListView<String> lstViewTimes; //Initialization of the ListView that is already accepted
 
 	// For displays
 	private String[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -190,9 +192,9 @@ public class CalendarUI extends Application
 	private DairyFarmerClient client = new DairyFarmerClient();
 	private User user;
 
-	public String theinputUsername;
-	public String theinputPassword;
-	boolean loginDetails = false;
+	private String inputUsername;
+	private String inputPassword;
+	private boolean loginDetails = false;
 
 	/**
 	 * Where the application launches from
@@ -217,9 +219,9 @@ public class CalendarUI extends Application
 		{
 			showLoginPage();
 
-			if(Utilities.userExists(client.getUsers(),theinputUsername)) //if the username exists
+			if(Utilities.userExists(client.getUsers(), inputUsername)) //if the username exists
 			{
-				if(theinputPassword.equals(client.getUser(theinputUsername).getPassword()) ) //if the password is correct
+				if(inputPassword.equals(client.getUser(inputUsername).getPassword()) ) //if the password is correct
 				{
 					loginDetails = true;
 				}
@@ -228,7 +230,7 @@ public class CalendarUI extends Application
 					Alert alert = new Alert(AlertType.ERROR);
 					alert.setTitle("Error");
 					alert.setHeaderText("Incorrect Password");
-					alert.setContentText("Please retry inputting your password");
+					alert.setContentText("Please try again");
 
 					alert.showAndWait();
 				}
@@ -238,13 +240,13 @@ public class CalendarUI extends Application
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
 				alert.setHeaderText("Username does not exist");
-				alert.setContentText("Please retry inputting your credentials");
+				alert.setContentText("Please try again");
 
 				alert.showAndWait();
 			}
 		}
 
-		user = client.getUser(theinputUsername);
+		user = client.getUser(inputUsername);
 		if(user.getAdmin())
 		{
 			Platform.runLater(() ->
@@ -268,15 +270,17 @@ public class CalendarUI extends Application
 		stage.setResizable(false);
 		stage.show();
 
-
-
+		Time.setTwentyFourMode(false);
+		lblEventName.setWrapText(true);
+		lblEventDesc.setWrapText(true);
 		setupCalendarBoxes(); // Populates arrays
 		setCurrDate(); // Sets the current date
 		showChangedMonth(); // Updates the UI
 		initializeListeners(); // Initializes listeners...
 		updateLists(); // Initializes the event lists
 		listViewApprovePushed();
-		listViewAcceptedPushed();
+		listViewAcceptedPushed(lstViewAvailable);
+		listViewAcceptedPushed(lstViewAccepted);
 
 		// Happens when user tries to exit
 		stage.setOnCloseRequest(e ->
@@ -362,8 +366,8 @@ public class CalendarUI extends Application
 
 		Optional<Pair<String, String>> result = dialog.showAndWait();
 
-		theinputUsername= username.getText();
-		theinputPassword = password.getText();
+		inputUsername = username.getText();
+		inputPassword = password.getText();
 	}
 
 	/**
@@ -485,7 +489,10 @@ public class CalendarUI extends Application
 			// Start by reseting the lists
 			lstViewAccepted.getItems().removeAll(lstViewAccepted.getItems());
 			lstViewAvailable.getItems().removeAll(lstViewAvailable.getItems());
-			
+			lstViewTimes.getItems().removeAll(lstViewTimes.getItems());
+			lblEventName.setText("");
+			lblEventDesc.setText("");
+
 			// Fill the lists
 			List<Event> events = client.getEvents(selectedDateLD);
 			if(events != null)
@@ -506,31 +513,32 @@ public class CalendarUI extends Application
 	 */
 	private void listViewApprovePushed()
 	{
-		//Obtained from : http://code.makery.ch/blog/javafx-dialogs-official/
 		Platform.runLater(() -> {
-			lstViewAvailable.setOnMouseClicked(e ->{
-				Event textArea = lstViewAvailable.getSelectionModel().getSelectedItem();
-				//System.out.println(textArea);
+			Event event = lstViewAvailable.getSelectionModel().getSelectedItem();
+			if(event != null)
+			{
 				Alert alert = new Alert(AlertType.CONFIRMATION);
 				alert.setTitle("Confirmation Event");
 				alert.setHeaderText("Event Actions");
 				alert.setContentText("Choose your option.");
 
-				ButtonType buttonTypeOne = new ButtonType("Accept Event");
-				ButtonType buttonTypeTwo = new ButtonType("Reject Event");
+				ButtonType buttonAccept = new ButtonType("Accept Event");
 				ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
 
-				alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
+				alert.getButtonTypes().setAll(buttonAccept, buttonTypeCancel);
 
 				Optional<ButtonType> result = alert.showAndWait();
-				if (result.get() == buttonTypeOne){
-
-				} else if (result.get() == buttonTypeTwo) {
-
-				} else {
-
+				if (result.get() == buttonAccept)
+				{
+					try {
+						openApproveEvent(event);
+					}
+					catch (Exception e1)
+					{
+						e1.printStackTrace();
+					}
 				}
-			});
+			}
 		});
 	}
 
@@ -538,29 +546,37 @@ public class CalendarUI extends Application
 	/**
 	 * Displays the event information at the bottom
 	 */
-	private void listViewAcceptedPushed()
+	private void listViewAcceptedPushed(ListView<Event> lstView)
 	{
 		Platform.runLater(() -> {
-			lstViewAccepted.setOnMouseClicked(e ->{
-				
-				String textArea = lstViewAccepted.getSelectionModel().getSelectedItem().toString();
-				Event currentEvent = lstViewAccepted.getSelectionModel().getSelectedItem();
-				lblEventName.setText("Event Name: " + textArea);
-				lblEventName.setText("Event Creator: " + currentEvent.getCreatorName());
-				listViewTimes.getItems().clear();
-				List<Time> listofTimes = currentEvent.getTimes();
-				StringBuilder builder = new StringBuilder();
-				
-				
-				
-				if(currentEvent!=null)
+			lstView.setOnMouseClicked(e ->
+			{
+				Event currentEvent = lstView.getSelectionModel().getSelectedItem();
+				if(currentEvent != null)
 				{
-					
-					for (Time time : listofTimes) {
-						listViewTimes.getItems().add(time.getTime().toString() +": " +  time.getAttendees());
+					lblEventName.setText(currentEvent.getEventName());
+					lblEventDesc.setText(currentEvent.getDescription());
+					lstViewTimes.getItems().removeAll(lstViewTimes.getItems());;
+					List<Time> listofTimes = currentEvent.getTimes();
+
+					if(currentEvent!=null)
+					{
+						String temp;
+						for (Time time : listofTimes)
+						{
+							temp = "";
+							temp += time.toString() + " :";
+							List<User> users = time.getAttendees();
+							for(User u : users)
+							{
+								temp += " " + u.getName();
+							}
+							lstViewTimes.getItems().add(temp);
+						}
 					}
+					if(lstView.equals(lstViewAvailable))
+						listViewApprovePushed();
 				}
-				
 			});
 		});
 	}
@@ -648,7 +664,10 @@ public class CalendarUI extends Application
 		btnCreateEvent.setOnAction(e ->
 		{
 			try {
-				openCreateEvent(); // Opens the create event window
+				if(canCreateEvent())
+					openCreateEvent(); // Opens the create event window
+				else
+					showDialogBox("Cannot Create Event", "Cannot create event on this day", "Creating events on this day is disallowed", AlertType.ERROR);
 			}
 			catch (Exception e1)
 			{
@@ -692,6 +711,28 @@ public class CalendarUI extends Application
 				});
 			}
 		}
+
+		chckTwentyfour.setOnAction(e ->
+		{
+			Time.setTwentyFourMode(chckTwentyfour.isSelected());
+			updateLists();
+		});
+	}
+
+	/**
+	 * Checks to see if user can create an event
+	 * @return if you can create an event
+	 */
+	private boolean canCreateEvent()
+	{
+		if(selectedDateArr[0] == 12 && selectedDateArr[1] == 25) // Christmas
+			return false;
+		else if(selectedDateArr[0] == 1 && selectedDateArr[1] == 1) // New Year's Day
+			return false;
+		else if(selectedDateArr[0] == 7 && selectedDateArr[1] == 4) // Independence Day
+			return false;
+		else
+			return true;
 	}
 
 	/**
@@ -710,6 +751,31 @@ public class CalendarUI extends Application
 	        public void run()
 	        {
 	            if(event.getEventFinished())
+	            {
+	            	updateLists();
+	            	paneMain.setDisable(false);
+	            	Thread.currentThread().stop();
+	            }
+	        }
+	    }, 0, 1, TimeUnit.SECONDS);
+	}
+
+	/**
+	 * Opens the create event window
+	 * @throws IOException In case CreateEventUI screws up
+	 * @throws InterruptedException For the thread
+	 */
+	private void openApproveEvent(Event event) throws IOException, InterruptedException
+	{
+		paneMain.setDisable(true); // Disables the Calendar
+		AcceptEventUI accept = new AcceptEventUI(user, event);
+		// Obtained (in part) from https://stackoverflow.com/questions/24104313/how-to-delay-in-java
+		final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+	    executorService.scheduleAtFixedRate(new Runnable() {
+	        @Override
+	        public void run()
+	        {
+	            if(accept.getWindowFinished())
 	            {
 	            	updateLists();
 	            	paneMain.setDisable(false);
@@ -938,5 +1004,23 @@ public class CalendarUI extends Application
 			lblSelectedDate2.setText("Selected Date\n" +  selDateLabel);
 
 		});
+	}
+
+	/**
+	 *
+	 * http://code.makery.ch/blog/javafx-dialogs-official/
+	 * @param title
+	 * @param header
+	 * @param content
+	 * @param type
+	 */
+	public void showDialogBox(String title, String header, String content, AlertType type)
+	{
+		Alert alert = new Alert(type);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(content);
+
+		alert.showAndWait();
 	}
 }

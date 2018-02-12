@@ -115,6 +115,10 @@ public class CreateEventUI
 			if(checkInputs())
 			{
 				List<Time> tempTime = lstChosenTimes.getItems();
+				for(Time t : tempTime)
+				{
+					t.addAttendee(admin);
+				}
 				List<User> tempUser = new ArrayList<User>();
 				tempUser.add(admin);
 				client.createEvent(txtEventName.getText(), txtEventDesc.getText(), admin.getName(), currDate, tempTime, tempUser);
@@ -150,7 +154,7 @@ public class CreateEventUI
 		{
 			for(Event e : temp)
 			{
-				if(txtEventName.getText() == e.getEventName())
+				if(txtEventName.getText().equals(e.getEventName()))
 				{
 					showDialogBox("Repeat Event Name", "Event Name Already Exists!", "Please change the event name", AlertType.ERROR);
 					txtEventName.requestFocus();
@@ -182,17 +186,16 @@ public class CreateEventUI
 	private ArrayList<Time> getPossibleTimes()
 	{
 		ArrayList<Time> times = new ArrayList<Time>();
-		Time temp;
-		ArrayList<User> creator = new ArrayList<User>();
-		creator.add(admin);
+		Time tempTime;
+		ArrayList<User> tempUsers = new ArrayList<User>();
 		for(int hour = 5; hour < 24; hour++)
 		{
 			if(hour != 12)
 			{
 				for(int min = 0; min < 60; min += 20)
 				{
-					temp = new Time(LocalTime.of(hour, min), creator);
-					times.add(temp);
+					tempTime = new Time(LocalTime.of(hour, min), tempUsers);
+					times.add(tempTime);
 				}
 			}
 		}

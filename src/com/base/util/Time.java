@@ -11,6 +11,7 @@ import java.util.List;
 public class Time {
     private LocalTime time;
     private List<User> attendees;
+    private static boolean twentyFourMode;
 
     /**
      * Constructor, signifies which users are available for a specific
@@ -57,8 +58,64 @@ public class Time {
         this.attendees = attendees;
     }
 
-    @Override
+    /**
+	 * Checks to see if the user is already attending
+	 *
+	 * @param attendee The attendee attending
+	 * @return if they are already going or not
+	 */
+	public boolean attendeeExists(User attendee)
+	{
+		if(!attendees.isEmpty())
+		{
+			for(int i = 0; i < attendees.size(); i++)
+			{
+				System.out.println(attendees.get(i));
+				if(attendees.get(i).equals(attendee))
+					return true;
+			}
+		}
+		return false;
+	}
+
+    /**
+	 * Adds an attendee to the attendees list
+	 *
+	 * @param attendee The attendee attending
+	 * @return if it worked or not
+	 */
+	public boolean addAttendee(User attendee)
+	{
+		if(attendeeExists(attendee))
+			return false;
+		attendees.add(attendee);
+		return true;
+	}
+
+	public static void setTwentyFourMode(boolean twentyfour)
+	{
+		twentyFourMode = twentyfour;
+	}
+
+    /**
+	 * Gets time
+	 *
+	 * @return formatted string
+	 */
+	@Override
     public String toString() {
-        return time.toString();
+    	String temp;
+    	if(twentyFourMode)
+    	{
+    		temp = String.format("%02d:%02d", time.getHour(), time.getMinute());
+    	}
+    	else
+    	{
+    		if(time.getHour() > 12)
+    			temp = String.format("%02d:%02d PM", (time.getHour()-12), time.getMinute());
+    		else
+    			temp = String.format("%02d:%02d AM", time.getHour(), time.getMinute());
+    	}
+        return temp;
     }
 }

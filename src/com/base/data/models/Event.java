@@ -142,10 +142,13 @@ public class Event {
 	 */
 	public boolean attendeeExists(User attendee)
 	{
-		for(int i = 0; i < attendees.size(); i++)
+		if(!attendees.isEmpty())
 		{
-			if(attendees.get(i).equals(attendee))
-				return true;
+			for(int i = 0; i < attendees.size(); i++)
+			{
+				if(attendees.get(i).equals(attendee))
+					return true;
+			}
 		}
 		return false;
 	}
